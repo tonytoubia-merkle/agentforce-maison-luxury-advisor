@@ -25,9 +25,8 @@ export class AgentforceClient {
       throw new Error('No access token or client credentials configured');
     }
 
-    const tokenUrl = import.meta.env.DEV
-      ? '/api/oauth/token'
-      : `${this.config.instanceUrl}/services/oauth2/token`;
+    // Always use proxy to avoid CORS — works in both dev and production (Vercel)
+    const tokenUrl = '/api/oauth/token';
 
     const response = await fetch(tokenUrl, {
       method: 'POST',
@@ -267,7 +266,7 @@ let agentforceClient: AgentforceClient | null = null;
 export const getAgentforceClient = (): AgentforceClient => {
   if (!agentforceClient) {
     agentforceClient = new AgentforceClient({
-      baseUrl: import.meta.env.DEV ? '/api/agentforce' : (import.meta.env.VITE_AGENTFORCE_BASE_URL || ''),
+      baseUrl: '/api/agentforce',
       agentId: import.meta.env.VITE_AGENTFORCE_AGENT_ID || '',
       clientId: import.meta.env.VITE_AGENTFORCE_CLIENT_ID || '',
       clientSecret: import.meta.env.VITE_AGENTFORCE_CLIENT_SECRET || '',

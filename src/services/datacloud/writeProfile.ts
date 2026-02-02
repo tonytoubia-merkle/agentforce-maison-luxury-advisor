@@ -27,7 +27,7 @@ export class DataCloudWriteService {
       throw new Error('No Data Cloud access token or OAuth credentials configured');
     }
 
-    const tokenUrl = `${this.config.baseUrl}/services/oauth2/token`;
+    const tokenUrl = '/api/oauth/token';
     const response = await fetch(tokenUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -50,7 +50,9 @@ export class DataCloudWriteService {
 
   private async postJson(path: string, body: Record<string, unknown>): Promise<void> {
     const token = await this.getAccessToken();
-    const response = await fetch(`${this.config.baseUrl}${path}`, {
+    // Route through proxy to avoid CORS
+    const proxyPath = path.replace(/^\/services\/data\/v60\.0/, '/api/datacloud');
+    const response = await fetch(proxyPath, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`,
