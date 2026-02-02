@@ -18,8 +18,7 @@
   }
 
   .product-blend {
-    mix-blend-mode: multiply;
-    filter: brightness(1.1) contrast(1.05) drop-shadow(0 8px 24px rgba(0, 0, 0, 0.3));
+    filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.3));
   }
 }
 
