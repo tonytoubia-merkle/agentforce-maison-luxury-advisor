@@ -140,6 +140,16 @@ Replace mock agent with real Agentforce. The client skeleton exists at `src/serv
 - Return structured JSON in the agent's response metadata, or
 - Embed JSON in the response text (the `parseDirectives.ts` parser handles this fallback)
 
+### 4.1.1 Agentforce DX Extension Setup
+
+To properly set up the Agentforce DX extension with this project:
+1. Install the Agentforce DX extension in VS Code
+2. Verify the Salesforce CLI is properly configured with the connected org
+3. Deploy the Agentforce agent configuration to your org
+4. Configure the environment variables with real Agentforce credentials
+5. Test the connection to the real Agentforce API
+
+
 ### 4.2 Adobe Firefly / Generative Backgrounds
 
 The Firefly client exists at `src/services/firefly/client.ts`. To enable:

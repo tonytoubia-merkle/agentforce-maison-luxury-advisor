@@ -51,4 +51,9 @@ export const MOCK_CUSTOMER: CustomerProfile = {
     ],
     prefersTravelSize: true,
   },
+  orders: [],
+  chatSummaries: [],
+  meaningfulEvents: [],
+  browseSessions: [],
+  loyalty: null,
 };

@@ -4,6 +4,7 @@ import { cn } from '@/utils/cn';
 import { ChatInput } from './ChatInput';
 import { ChatMessages } from './ChatMessages';
 import { TypingIndicator } from './TypingIndicator';
+import { SuggestedActions } from './SuggestedActions';
 import type { AgentMessage } from '@/types/agent';
 
 interface ChatInterfaceProps {
@@ -12,6 +13,9 @@ interface ChatInterfaceProps {
   onSendMessage: (message: string) => void;
   isAgentTyping: boolean;
   isMinimized?: boolean;
+  suggestedActions?: string[];
+  /** Slot rendered between messages and chat input (e.g. product showcase) */
+  productSlot?: React.ReactNode;
 }
 
 export const ChatInterface: React.FC<ChatInterfaceProps> = ({
@@ -20,6 +24,8 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
   onSendMessage,
   isAgentTyping,
   isMinimized = false,
+  suggestedActions = [],
+  productSlot,
 }) => {
   const [inputValue, setInputValue] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -76,10 +82,16 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
       {messages.length > 0 && (
         <ChatMessages messages={messages} />
       )}
-      
+
       {isAgentTyping && <TypingIndicator />}
-      
+
+      {productSlot}
+
       <div ref={messagesEndRef} />
+
+      {!isAgentTyping && suggestedActions.length > 0 && (
+        <SuggestedActions actions={suggestedActions} onSelect={onSendMessage} />
+      )}
 
       <ChatInput
         value={inputValue}

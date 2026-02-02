@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ConnectedApp xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>Agentforce Concierge</label>
+    <consumerKey>YOUR_CONSUMER_KEY_HERE</consumerKey>
+    <consumerSecret>YOUR_CONSUMER_SECRET_HERE</consumerSecret>
+    <isAdminApproved>true</isAdminApproved>
+    <isClientCredentialApproved>false</isClientCredentialApproved>
+    <isIntrospectAllTokens>false</isIntrospectAllTokens>
+    <isTokenExchangeApproved>false</isTokenExchangeApproved>
+    <oauthConfig>
+        <callbackUrl>https://your-domain.com/oauth/callback</callbackUrl>
+        <scopes>Full</scopes>
+        <scopes>RefreshToken</scopes>
+        <scopes>Api</scopes>
+    </oauthConfig>
+    <profileName>System Administrator</profileName>
+    <status>Active</status>
+</ConnectedApp>

@@ -4,18 +4,35 @@ export type SceneLayout =
   | 'product-grid'
   | 'checkout';
 
-export type SceneSetting = 
+/** Well-known settings with pre-seeded images and fallback gradients. */
+export type KnownSceneSetting =
   | 'neutral'
   | 'bathroom'
   | 'travel'
   | 'outdoor'
-  | 'lifestyle';
+  | 'lifestyle'
+  | 'bedroom'
+  | 'vanity'
+  | 'gym'
+  | 'office';
+
+/**
+ * Scene setting can be a well-known value OR a free-form string from the agent.
+ * Free-form settings (e.g. "streets-of-new-york") won't match pre-seeded images
+ * and will always trigger generation via backgroundPrompt.
+ */
+export type SceneSetting = KnownSceneSetting | (string & {});
 
 export interface SceneBackground {
   type: 'gradient' | 'image' | 'generative';
   value: string;
   generationPrompt?: string;
   isLoading?: boolean;
+}
+
+export interface WelcomeData {
+  message: string;
+  subtext?: string;
 }
 
 export interface SceneState {
@@ -25,6 +42,8 @@ export interface SceneState {
   chatPosition: 'center' | 'bottom' | 'minimized';
   products: import('./product').Product[];
   checkoutActive: boolean;
+  welcomeActive: boolean;
+  welcomeData?: WelcomeData;
   transitionKey: string;
 }
 

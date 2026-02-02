@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nAdd Agentforce integration, Salesforce metadata, services, and UI enhancements\n\nAdds server-side proxy, Agentforce client, Gemini/Imagen/CMS/Commerce/DataCloud\nservices, customer personas, product staging, persona selector, profile panel,\nwelcome screen, suggested actions, and Salesforce project metadata.\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(del:*)"
+    ]
+  }
+}

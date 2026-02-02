@@ -1,13 +1,43 @@
-import { SCENE_PROMPTS } from './prompts';
+import { SCENE_PROMPTS, buildScenePrompt } from './prompts';
 import type { SceneSetting } from '@/types/scene';
 import type { Product } from '@/types/product';
 import type { FireflyConfig, GenerationOptions } from './types';
 
 export class FireflyClient {
   private config: FireflyConfig;
+  private accessToken: string | null = null;
+  private tokenExpiresAt = 0;
 
   constructor(config: FireflyConfig) {
     this.config = config;
+  }
+
+  private async getAccessToken(): Promise<string> {
+    if (this.accessToken && Date.now() < this.tokenExpiresAt) {
+      return this.accessToken;
+    }
+
+    const response = await fetch('/api/firefly/token', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        grant_type: 'client_credentials',
+        client_id: this.config.clientId,
+        client_secret: this.config.clientSecret,
+        scope: 'openid,AdobeID,firefly_api',
+      }),
+    });
+
+    if (!response.ok) {
+      const errText = await response.text();
+      throw new Error(`Adobe OAuth failed (${response.status}): ${errText}`);
+    }
+
+    const data = await response.json();
+    this.accessToken = data.access_token;
+    // Expire 5 minutes early
+    this.tokenExpiresAt = Date.now() + (data.expires_in ? data.expires_in * 1000 : 86400_000) - 300_000;
+    return this.accessToken!;
   }
 
   async generateSceneBackground(
@@ -16,43 +46,63 @@ export class FireflyClient {
     options: GenerationOptions = {}
   ): Promise<string> {
     const {
-      width = 1920,
-      height = 1080,
-      style = 'photorealistic',
+      width = 2048,
+      height = 1024,
     } = options;
 
-    const basePrompt = SCENE_PROMPTS[setting];
-    const productContext = this.buildProductContext(products);
-    const fullPrompt = `${basePrompt}. ${productContext}. Professional product photography lighting, elegant and luxurious atmosphere, soft shadows, ${style} style.`;
+    const token = await this.getAccessToken();
+    const prompt = buildScenePrompt(setting);
 
-    const response = await fetch(`${this.config.baseUrl}/v2/images/generate`, {
+    const response = await fetch('/api/firefly/generate', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${this.config.apiKey}`,
+        'Authorization': `Bearer ${token}`,
+        'x-api-key': this.config.clientId,
         'Content-Type': 'application/json',
-        'x-api-key': this.config.apiKey,
       },
       body: JSON.stringify({
-        prompt: fullPrompt,
-        negativePrompt: options.negativePrompt || 'text, watermark, logo, blurry, low quality',
+        prompt,
         contentClass: 'photo',
         size: { width, height },
-        n: 1,
+        numVariations: 1,
       }),
     });
 
     if (!response.ok) {
-      throw new Error(`Firefly generation failed: ${response.statusText}`);
+      const errText = await response.text();
+      throw new Error(`Firefly generation failed (${response.status}): ${errText}`);
     }
 
     const data = await response.json();
-    return data.outputs[0].image.url;
+    return data.outputs[0].image.presignedUrl;
   }
 
-  private buildProductContext(products: Product[]): string {
-    if (products.length === 0) return '';
-    const categories = [...new Set(products.map((p) => p.category))];
-    return `Featuring ${categories.join(' and ')} products in an elegant arrangement`;
+  /** Generate from a raw prompt string (no setting mapping). */
+  async generateFromPrompt(prompt: string): Promise<string> {
+    const token = await this.getAccessToken();
+
+    const response = await fetch('/api/firefly/generate', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'x-api-key': this.config.clientId,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        prompt,
+        contentClass: 'photo',
+        size: { width: 2048, height: 1024 },
+        numVariations: 1,
+      }),
+    });
+
+    if (!response.ok) {
+      const errText = await response.text();
+      throw new Error(`Firefly generation failed (${response.status}): ${errText}`);
+    }
+
+    const data = await response.json();
+    return data.outputs[0].image.presignedUrl;
   }
 }
 
@@ -61,8 +111,8 @@ let fireflyClient: FireflyClient | null = null;
 export const getFireflyClient = (): FireflyClient => {
   if (!fireflyClient) {
     fireflyClient = new FireflyClient({
-      apiKey: import.meta.env.VITE_FIREFLY_API_KEY || '',
-      baseUrl: import.meta.env.VITE_FIREFLY_BASE_URL || 'https://firefly-api.adobe.io',
+      clientId: import.meta.env.VITE_FIREFLY_CLIENT_ID || '',
+      clientSecret: import.meta.env.VITE_FIREFLY_CLIENT_SECRET || '',
     });
   }
   return fireflyClient;

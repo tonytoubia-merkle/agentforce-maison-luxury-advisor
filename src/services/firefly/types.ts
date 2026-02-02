@@ -1,11 +1,10 @@
 export interface FireflyConfig {
-  apiKey: string;
-  baseUrl: string;
+  clientId: string;
+  clientSecret: string;
 }
 
 export interface GenerationOptions {
   width?: number;
   height?: number;
   style?: 'photorealistic' | 'artistic' | 'minimal';
-  negativePrompt?: string;
 }

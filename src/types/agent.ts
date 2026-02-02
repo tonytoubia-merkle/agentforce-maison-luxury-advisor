@@ -14,21 +14,29 @@ export interface UIDirective {
   payload: UIDirectivePayload;
 }
 
-export type UIAction = 
+export type UIAction =
   | 'SHOW_PRODUCT'
   | 'SHOW_PRODUCTS'
   | 'CHANGE_SCENE'
+  | 'WELCOME_SCENE'
   | 'INITIATE_CHECKOUT'
   | 'CONFIRM_ORDER'
   | 'RESET_SCENE';
 
 export interface UIDirectivePayload {
   products?: Product[];
+  welcomeMessage?: string;
+  welcomeSubtext?: string;
   sceneContext?: {
     setting: SceneSetting;
     mood?: string;
     generateBackground?: boolean;
     backgroundPrompt?: string;
+    cmsAssetId?: string;
+    cmsTag?: string;
+    editMode?: boolean;
+    sceneAssetId?: string;
+    imageUrl?: string;
   };
   checkoutData?: {
     products: Product[];

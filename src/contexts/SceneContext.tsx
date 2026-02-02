@@ -1,8 +1,44 @@
 import React, { createContext, useContext, useReducer, useCallback } from 'react';
-import type { SceneState, SceneLayout, SceneSetting, SceneBackground } from '@/types/scene';
+import type { SceneState, SceneLayout, SceneSetting, SceneBackground, WelcomeData } from '@/types/scene';
 import type { Product } from '@/types/product';
 import type { UIDirective } from '@/types/agent';
-import { useGenerativeBackground } from '@/hooks/useGenerativeBackground';
+import { useGenerativeBackground, type BackgroundOptions } from '@/hooks/useGenerativeBackground';
+
+/** Build BackgroundOptions from a UIDirective's sceneContext payload. */
+function buildBgOptions(sc?: UIDirective['payload']['sceneContext']): BackgroundOptions {
+  if (!sc) return {};
+  const raw = sc as Record<string, unknown>;
+  return {
+    cmsAssetId: sc.cmsAssetId,
+    cmsTag: sc.cmsTag,
+    editMode: sc.editMode,
+    backgroundPrompt: sc.backgroundPrompt,
+    editPrompt: sc.editMode ? sc.backgroundPrompt : undefined,
+    sceneAssetId: sc.sceneAssetId,
+    imageUrl: sc.imageUrl,
+    mood: raw.mood as string | undefined,
+    customerContext: raw.customerContext as string | undefined,
+    sceneType: raw.sceneType as string | undefined,
+  };
+}
+
+/** Infer a scene setting from product categories when the agent doesn't provide one. */
+function inferSettingFromProducts(products: Product[]): SceneSetting {
+  const categories = products.map((p) => (p.category || '').toLowerCase());
+  const names = products.map((p) => (p.name || '').toLowerCase());
+  const all = [...categories, ...names].join(' ');
+
+  if (/foundation|lipstick|blush|mascara|makeup|palette|vanity/i.test(all)) return 'vanity';
+  if (/fragrance|perfume|cologne|eau de|scent|parfum/i.test(all)) return 'bedroom';
+  if (/shampoo|conditioner|hair/i.test(all)) return 'bathroom';
+  if (/gym|workout|active|post.workout/i.test(all)) return 'gym';
+  if (/office|work|minimal|desk/i.test(all)) return 'office';
+  if (/travel|luggage|portable|mini|kit|on.the.go/i.test(all)) return 'travel';
+  if (/sun|spf|outdoor|beach|hiking|uv/i.test(all)) return 'outdoor';
+  if (/moisturiz|serum|cleanser|skincare|face|eye.cream|toner|mask|bathroom|sink/i.test(all)) return 'bathroom';
+  if (/lifestyle/i.test(all)) return 'lifestyle';
+  return 'bathroom'; // default for beauty products
+}
 
 interface SceneContextValue {
   scene: SceneState;
@@ -12,6 +48,7 @@ interface SceneContextValue {
   processUIDirective: (directive: UIDirective) => Promise<void>;
   openCheckout: () => void;
   closeCheckout: () => void;
+  dismissWelcome: () => void;
   resetScene: () => void;
 }
 
@@ -25,6 +62,7 @@ const initialScene: SceneState = {
   chatPosition: 'center',
   products: [],
   checkoutActive: false,
+  welcomeActive: false,
   transitionKey: 'initial',
 };
 
@@ -35,6 +73,8 @@ type SceneAction =
   | { type: 'SET_PRODUCTS'; products: Product[] }
   | { type: 'OPEN_CHECKOUT' }
   | { type: 'CLOSE_CHECKOUT' }
+  | { type: 'SHOW_WELCOME'; welcomeData: WelcomeData }
+  | { type: 'DISMISS_WELCOME' }
   | { type: 'RESET' };
 
 function sceneReducer(state: SceneState, action: SceneAction): SceneState {
@@ -64,6 +104,10 @@ function sceneReducer(state: SceneState, action: SceneAction): SceneState {
       return { ...state, checkoutActive: true, chatPosition: 'minimized' };
     case 'CLOSE_CHECKOUT':
       return { ...state, checkoutActive: false, chatPosition: 'bottom' };
+    case 'SHOW_WELCOME':
+      return { ...state, welcomeActive: true, welcomeData: action.welcomeData, layout: 'conversation-centered', chatPosition: 'center' };
+    case 'DISMISS_WELCOME':
+      return { ...state, welcomeActive: false, welcomeData: undefined };
     case 'RESET':
       return initialScene;
     default:
@@ -99,45 +143,141 @@ export const SceneProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           const layout = payload.products.length === 1 ? 'product-hero' : 'product-grid';
           dispatch({ type: 'TRANSITION_LAYOUT', layout, products: payload.products });
         }
-        
-        if (payload.sceneContext) {
-          dispatch({ type: 'SET_SETTING', setting: payload.sceneContext.setting });
-          
-          if (payload.sceneContext.generateBackground) {
+
+        // Use explicit sceneContext if provided, otherwise infer from products
+        const setting: SceneSetting = payload.sceneContext?.setting
+          || inferSettingFromProducts(payload.products || []);
+        const shouldGenerate = payload.sceneContext?.generateBackground !== false;
+
+        // Auto-generate a backgroundPrompt if the agent didn't provide one
+        const sceneCtx: UIDirective['payload']['sceneContext'] = payload.sceneContext || { setting };
+        if (!sceneCtx.backgroundPrompt && payload.products?.length) {
+          const names = payload.products.slice(0, 3).map(p => p.name).join(', ');
+          sceneCtx.backgroundPrompt = `A luxurious ${setting} setting perfect for showcasing beauty products like ${names}. Elegant, soft lighting, high-end atmosphere.`;
+          sceneCtx.setting = setting;
+          sceneCtx.generateBackground = true;
+        }
+
+        // Skip regeneration if we already have a generated image for the same setting
+        const alreadyHasImage = scene.setting === setting && scene.background.type === 'image' && scene.background.value;
+
+        dispatch({ type: 'SET_SETTING', setting });
+
+        if (shouldGenerate && !alreadyHasImage) {
+          dispatch({
+            type: 'SET_BACKGROUND',
+            background: { type: 'generative', value: '', isLoading: true },
+          });
+
+          try {
+            const result = await generateBackground(setting, payload.products || [], buildBgOptions(sceneCtx));
+            const isGradient = result.startsWith('linear-gradient');
             dispatch({
               type: 'SET_BACKGROUND',
-              background: { type: 'generative', value: '', isLoading: true },
+              background: { type: isGradient ? 'gradient' : 'image', value: result },
             });
-            
-            try {
-              const imageUrl = await generateBackground(
-                payload.sceneContext.setting,
-                payload.products || []
-              );
-              
-              dispatch({
-                type: 'SET_BACKGROUND',
-                background: { type: 'image', value: imageUrl },
-              });
-            } catch (error) {
-              console.error('Background generation failed:', error);
-              dispatch({
-                type: 'SET_BACKGROUND',
-                background: {
-                  type: 'gradient',
-                  value: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)',
-                },
-              });
-            }
+          } catch (error) {
+            console.error('Background generation failed:', error);
+            dispatch({
+              type: 'SET_BACKGROUND',
+              background: {
+                type: 'gradient',
+                value: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)',
+              },
+            });
           }
         }
         break;
       }
-      
+
+      case 'CHANGE_SCENE': {
+        const sceneSetting: SceneSetting = payload.sceneContext?.setting
+          || inferSettingFromProducts(payload.products || []);
+        const shouldGen = payload.sceneContext?.generateBackground !== false;
+
+        // Auto-generate a backgroundPrompt if not provided
+        const changeCtx: UIDirective['payload']['sceneContext'] = payload.sceneContext || { setting: sceneSetting };
+        const agentProvidedPrompt = !!payload.sceneContext?.backgroundPrompt;
+        if (!changeCtx.backgroundPrompt) {
+          changeCtx.backgroundPrompt = `A luxurious ${sceneSetting} setting with elegant, soft lighting and a high-end beauty atmosphere.`;
+          changeCtx.setting = sceneSetting;
+          changeCtx.generateBackground = true;
+        }
+
+        // Skip regeneration if same setting + already have image + agent didn't request a specific prompt
+        const alreadyHasSceneImage = scene.setting === sceneSetting && scene.background.type === 'image' && scene.background.value && !agentProvidedPrompt;
+
+        dispatch({ type: 'SET_SETTING', setting: sceneSetting });
+
+        if (shouldGen && !alreadyHasSceneImage) {
+          dispatch({
+            type: 'SET_BACKGROUND',
+            background: { type: 'generative', value: '', isLoading: true },
+          });
+
+          try {
+            const result = await generateBackground(sceneSetting, payload.products || [], buildBgOptions(changeCtx));
+            const isGradient = result.startsWith('linear-gradient');
+            dispatch({
+              type: 'SET_BACKGROUND',
+              background: { type: isGradient ? 'gradient' : 'image', value: result },
+            });
+          } catch (error) {
+            console.error('Background generation failed:', error);
+            dispatch({
+              type: 'SET_BACKGROUND',
+              background: {
+                type: 'gradient',
+                value: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)',
+              },
+            });
+          }
+        }
+        break;
+      }
+
       case 'INITIATE_CHECKOUT':
         dispatch({ type: 'OPEN_CHECKOUT' });
         break;
-        
+
+      case 'CONFIRM_ORDER':
+        dispatch({ type: 'CLOSE_CHECKOUT' });
+        break;
+
+      case 'WELCOME_SCENE': {
+        // Show welcome overlay
+        dispatch({
+          type: 'SHOW_WELCOME',
+          welcomeData: {
+            message: payload.welcomeMessage || 'Welcome!',
+            subtext: payload.welcomeSubtext,
+          },
+        });
+
+        // Generate background for welcome scene
+        const welcomeSetting: SceneSetting = payload.sceneContext?.setting || 'neutral';
+        const shouldGenWelcome = payload.sceneContext?.generateBackground !== false;
+        dispatch({ type: 'SET_SETTING', setting: welcomeSetting });
+
+        if (shouldGenWelcome) {
+          dispatch({
+            type: 'SET_BACKGROUND',
+            background: { type: 'generative', value: '', isLoading: true },
+          });
+          try {
+            const result = await generateBackground(welcomeSetting, [], buildBgOptions(payload.sceneContext));
+            const isGradient = result.startsWith('linear-gradient');
+            dispatch({
+              type: 'SET_BACKGROUND',
+              background: { type: isGradient ? 'gradient' : 'image', value: result },
+            });
+          } catch (error) {
+            console.error('Welcome background generation failed:', error);
+          }
+        }
+        break;
+      }
+
       case 'RESET_SCENE':
         dispatch({ type: 'RESET' });
         break;
@@ -150,6 +290,10 @@ export const SceneProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   const closeCheckout = useCallback(() => {
     dispatch({ type: 'CLOSE_CHECKOUT' });
+  }, []);
+
+  const dismissWelcome = useCallback(() => {
+    dispatch({ type: 'DISMISS_WELCOME' });
   }, []);
 
   const resetScene = useCallback(() => {
@@ -166,6 +310,7 @@ export const SceneProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         processUIDirective,
         openCheckout,
         closeCheckout,
+        dismissWelcome,
         resetScene,
       }}
     >

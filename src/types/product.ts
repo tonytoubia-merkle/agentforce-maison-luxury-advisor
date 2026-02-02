@@ -1,11 +1,21 @@
-export type ProductCategory = 
+export type ProductCategory =
   | 'moisturizer'
   | 'cleanser'
   | 'serum'
   | 'sunscreen'
   | 'mask'
   | 'toner'
-  | 'travel-kit';
+  | 'travel-kit'
+  | 'eye-cream'
+  | 'foundation'
+  | 'lipstick'
+  | 'mascara'
+  | 'blush'
+  | 'fragrance'
+  | 'shampoo'
+  | 'conditioner'
+  | 'hair-treatment'
+  | 'spot-treatment';
 
 export interface ProductAttributes {
   skinType?: ('dry' | 'oily' | 'combination' | 'sensitive' | 'normal')[];

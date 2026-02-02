@@ -1,10 +1,135 @@
-export interface BeautyProfile {
+export type IdentityTier = 'known' | 'appended' | 'anonymous';
+
+export interface MerkuryIdentity {
+  merkuryId: string;
+  identityTier: IdentityTier;
+  confidence: number;
+  resolvedAt: string;
+}
+
+// ─── 3P: Merkury Appended Data ──────────────────────────────────
+export interface AppendedProfile {
+  ageRange?: string;
+  gender?: string;
+  householdIncome?: string;
+  hasChildren?: boolean;
+  homeOwnership?: 'own' | 'rent' | 'unknown';
+  educationLevel?: string;
+  interests?: string[];
+  lifestyleSignals?: string[];
+  geoRegion?: string;
+}
+
+// ─── Purchase Data (Order-level) ────────────────────────────────
+export interface OrderLineItem {
+  productId: string;
+  productName: string;
+  quantity: number;
+  unitPrice: number;
+  isGift?: boolean;
+}
+
+export interface OrderRecord {
+  orderId: string;
+  orderDate: string;
+  channel: 'online' | 'in-store' | 'mobile-app';
+  lineItems: OrderLineItem[];
+  totalAmount: number;
+  status: 'completed' | 'shipped' | 'returned';
+}
+
+// ─── Summarized Chat Context (Agent-generated) ──────────────────
+export interface ChatSummary {
+  sessionDate: string;
+  summary: string;
+  sentiment: 'positive' | 'neutral' | 'negative';
+  topicsDiscussed: string[];
+}
+
+// ─── Meaningful Events (Agent-captured) ─────────────────────────
+export interface MeaningfulEvent {
+  eventType: 'preference' | 'milestone' | 'life-event' | 'concern' | 'intent';
+  description: string;
+  capturedAt: string;
+  agentNote?: string;
+  metadata?: Record<string, string>;
+}
+
+// ─── Browse Data ────────────────────────────────────────────────
+export interface BrowseSession {
+  sessionDate: string;
+  categoriesBrowsed: string[];
+  productsViewed: string[];   // product IDs
+  durationMinutes: number;
+  device: 'desktop' | 'mobile' | 'tablet';
+}
+
+// ─── 1P Profile Data (Preference Center) ────────────────────────
+export interface ProfilePreferences {
   skinType: 'dry' | 'oily' | 'combination' | 'sensitive' | 'normal';
   concerns: string[];
   allergies: string[];
+  fragrancePreference?: 'love' | 'sensitive' | 'fragrance-free';
+  communicationPrefs?: {
+    email: boolean;
+    sms: boolean;
+    push: boolean;
+  };
   preferredBrands: string[];
   ageRange?: string;
 }
+
+// ─── Loyalty Data (Salesforce Loyalty Management) ───────────────
+export interface LoyaltyData {
+  tier: 'bronze' | 'silver' | 'gold' | 'platinum';
+  pointsBalance: number;
+  lifetimePoints: number;
+  memberSince: string;
+  rewardsAvailable: { name: string; pointsCost: number }[];
+  tierExpiryDate?: string;
+  nextTierThreshold?: number;
+}
+
+// ─── Agent-Captured Profile (conversational enrichment) ─────────
+// Fields the agent captures naturally through conversation, NOT via forms.
+// These persist on the customer record and inform all future interactions.
+// Each field tracks when/how it was captured for transparency.
+export interface CapturedProfileField<T = string> {
+  value: T;
+  capturedAt: string;       // ISO date when the agent noted this
+  capturedFrom: string;     // e.g. "chat session 2025-12-18", "inferred from order"
+  confidence: 'stated' | 'inferred';  // did customer say it directly, or did agent infer it?
+}
+
+export interface AgentCapturedProfile {
+  // Personal milestones & dates
+  birthday?: CapturedProfileField;             // "My birthday is in March"
+  anniversary?: CapturedProfileField;          // "Our anniversary is February 14"
+  partnerName?: CapturedProfileField;          // "I'm shopping for my wife, Elena"
+
+  // Gifting context
+  giftsFor?: CapturedProfileField<string[]>;   // ["partner", "mother", "sister"]
+  upcomingOccasions?: CapturedProfileField<string[]>; // ["anniversary", "mother's day"]
+
+  // Lifestyle & routine
+  morningRoutineTime?: CapturedProfileField;   // "I only have 5 minutes in the morning"
+  makeupFrequency?: CapturedProfileField;      // "daily", "weekends only", "special occasions"
+  exerciseRoutine?: CapturedProfileField;      // "I run every morning", "yoga 3x/week"
+  workEnvironment?: CapturedProfileField;      // "office with AC", "outdoors", "WFH"
+
+  // Beauty philosophy
+  beautyPriority?: CapturedProfileField;       // "I care most about ingredients", "I want it fast"
+  priceRange?: CapturedProfileField;           // "I don't mind spending more for quality"
+  sustainabilityPref?: CapturedProfileField;   // "I only buy cruelty-free"
+
+  // Skin/body context the agent picks up
+  climateContext?: CapturedProfileField;       // "It's really dry where I live"
+  waterIntake?: CapturedProfileField;          // "I know I don't drink enough water"
+  sleepPattern?: CapturedProfileField;         // "I'm a night owl"
+}
+
+// ─── Legacy compat alias ────────────────────────────────────────
+export type BeautyProfile = ProfilePreferences;
 
 export interface TravelPreferences {
   upcomingTrips?: {
@@ -15,6 +140,7 @@ export interface TravelPreferences {
   prefersTravelSize: boolean;
 }
 
+/** @deprecated Use OrderRecord instead */
 export interface PurchaseRecord {
   productId: string;
   productName: string;
@@ -47,9 +173,67 @@ export interface CustomerProfile {
   id: string;
   name: string;
   email: string;
-  beautyProfile: BeautyProfile;
+
+  // 1P Profile (preference center)
+  beautyProfile: ProfilePreferences;
+
+  // Purchase history (order-level)
+  orders: OrderRecord[];
+  /** @deprecated Use orders instead */
   purchaseHistory: PurchaseRecord[];
+
+  // Agent-generated context
+  chatSummaries: ChatSummary[];
+  meaningfulEvents: MeaningfulEvent[];
+
+  // Browse behavior
+  browseSessions: BrowseSession[];
+
+  // Loyalty
+  loyalty: LoyaltyData | null;
+  /** @deprecated Use loyalty?.tier instead */
+  loyaltyTier?: 'bronze' | 'silver' | 'gold' | 'platinum';
+  lifetimeValue?: number;
+
+  // Agent-captured conversational profile
+  agentCapturedProfile?: AgentCapturedProfile;
+
+  // Identity
+  merkuryIdentity?: MerkuryIdentity;
+  appendedProfile?: AppendedProfile;
+
+  // Legacy fields kept for backward compat
   savedPaymentMethods: PaymentMethod[];
   shippingAddresses: Address[];
   travelPreferences?: TravelPreferences;
+  /** @deprecated Use meaningfulEvents / browseSessions instead */
+  recentActivity?: RecentActivity[];
+}
+
+export interface RecentActivity {
+  type: 'purchase' | 'trip' | 'browse' | 'return';
+  description: string;
+  date: string;
+  productIds?: string[];
+  metadata?: Record<string, string>;
+}
+
+export interface CustomerSessionContext {
+  customerId: string;
+  name: string;
+  identityTier: IdentityTier;
+  skinType?: string;
+  concerns?: string[];
+  recentPurchases?: string[];
+  recentActivity?: string[];
+  appendedInterests?: string[];
+  loyaltyTier?: string;
+  loyaltyPoints?: number;
+  chatContext?: string[];
+  meaningfulEvents?: string[];
+  browseInterests?: string[];
+  // Agent-captured conversational profile fields (flattened for the agent)
+  capturedProfile?: string[];
+  // Fields the agent should try to capture (missing from profile)
+  missingProfileFields?: string[];
 }

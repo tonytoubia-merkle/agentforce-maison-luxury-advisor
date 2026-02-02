@@ -1,3 +1,4 @@
+import { useState, useRef, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '@/utils/cn';
 
@@ -9,6 +10,15 @@ interface ChatInputProps {
   isCentered?: boolean;
 }
 
+type SpeechRecognitionType = typeof window extends { SpeechRecognition: infer T } ? T : never;
+
+const getSpeechRecognitionCtor = (): (new () => any) | null => {
+  if (typeof window === 'undefined') return null;
+  return (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition || null;
+};
+
+const hasSpeechRecognition = getSpeechRecognitionCtor() !== null;
+
 export const ChatInput: React.FC<ChatInputProps> = ({
   value,
   onChange,
@@ -16,12 +26,52 @@ export const ChatInput: React.FC<ChatInputProps> = ({
   placeholder = 'Type a message...',
   isCentered = false,
 }) => {
+  const [isListening, setIsListening] = useState(false);
+  const recognitionRef = useRef<any>(null);
+
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       onSubmit();
     }
   };
+
+  const toggleVoice = useCallback(() => {
+    if (!hasSpeechRecognition) return;
+
+    if (isListening && recognitionRef.current) {
+      recognitionRef.current.stop();
+      setIsListening(false);
+      return;
+    }
+
+    const Ctor = getSpeechRecognitionCtor()!;
+    const recognition = new Ctor();
+    recognition.continuous = false;
+    recognition.interimResults = true;
+    recognition.lang = 'en-US';
+
+    recognition.onresult = (event: any) => {
+      const transcript = Array.from(event.results as any[])
+        .map((result: any) => result[0].transcript)
+        .join('');
+      onChange(transcript);
+    };
+
+    recognition.onend = () => {
+      setIsListening(false);
+      recognitionRef.current = null;
+    };
+
+    recognition.onerror = () => {
+      setIsListening(false);
+      recognitionRef.current = null;
+    };
+
+    recognitionRef.current = recognition;
+    recognition.start();
+    setIsListening(true);
+  }, [isListening, onChange]);
 
   return (
     <motion.div
@@ -37,7 +87,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
           value={value}
           onChange={(e) => onChange(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder={placeholder}
+          placeholder={isListening ? 'Listening...' : placeholder}
           className={cn(
             'w-full px-6 py-4 rounded-full',
             'bg-white/10 backdrop-blur-md',
@@ -45,18 +95,25 @@ export const ChatInput: React.FC<ChatInputProps> = ({
             'text-white placeholder-white/50',
             'focus:outline-none focus:ring-2 focus:ring-white/30',
             'transition-all duration-200',
-            isCentered && 'text-lg'
+            isCentered && 'text-lg',
+            isListening && 'border-red-400/50'
           )}
         />
-        
-        <button
-          className="absolute right-14 p-2 text-white/60 hover:text-white transition-colors"
-          aria-label="Voice input"
-        >
-          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
-          </svg>
-        </button>
+
+        {hasSpeechRecognition && (
+          <button
+            onClick={toggleVoice}
+            className={cn(
+              'absolute right-14 p-2 transition-colors',
+              isListening ? 'text-red-400 animate-pulse' : 'text-white/60 hover:text-white'
+            )}
+            aria-label={isListening ? 'Stop listening' : 'Voice input'}
+          >
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+            </svg>
+          </button>
+        )}
 
         <button
           onClick={onSubmit}

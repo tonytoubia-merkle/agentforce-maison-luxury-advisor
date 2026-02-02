@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { useScene } from '@/contexts/SceneContext';
+import { useProductStaging } from '@/hooks/useProductStaging';
 import { Badge } from '@/components/ui/Badge';
 import type { Product } from '@/types/product';
 
@@ -8,21 +9,34 @@ interface ProductCardProps {
 }
 
 export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
-  const { openCheckout } = useScene();
+  const { scene, openCheckout } = useScene();
+  const { imageUrl, isStaging, isStaged } = useProductStaging(
+    product.id,
+    product.imageUrl,
+    scene.setting,
+    product.name
+  );
 
   return (
     <motion.div
       whileHover={{ y: -8, scale: 1.02 }}
       transition={{ duration: 0.2 }}
-      className="bg-white/10 backdrop-blur-md rounded-2xl overflow-hidden cursor-pointer group"
+      className="rounded-2xl overflow-hidden cursor-pointer group"
     >
       <div className="relative aspect-square">
+        {isStaging && (
+          <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/20 backdrop-blur-sm">
+            <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+          </div>
+        )}
         <img
-          src={product.imageUrl}
+          src={imageUrl}
           alt={product.name}
-          className="w-full h-full object-cover"
+          className={`w-full h-full transition-opacity duration-500 object-contain product-blend ${
+            isStaging ? 'opacity-50' : 'opacity-100'
+          }`}
         />
-        {product.attributes.isTravel && (
+        {product.attributes?.isTravel && (
           <Badge className="absolute top-3 left-3 bg-blue-500">
             Travel Size
           </Badge>
@@ -42,7 +56,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         
         <div className="flex items-center justify-between mt-4">
           <span className="text-xl font-light">
-            ${product.price.toFixed(2)}
+            ${(product.price ?? 0).toFixed(2)}
           </span>
           <button
             onClick={() => openCheckout()}
