@@ -24,8 +24,6 @@ export const PRESEEDED_BACKGROUNDS: PreseededAsset[] = [
 
   // Travel
   { setting: 'travel', variant: '1', path: '/assets/backgrounds/travel-1.jpg', tags: ['scene-travel'] },
-  { setting: 'travel', variant: '2', path: '/assets/backgrounds/travel-2.jpg', tags: ['scene-travel'] },
-  { setting: 'travel', variant: '3', path: '/assets/backgrounds/travel-3.jpg', tags: ['scene-travel'] },
 
   // Outdoor
   { setting: 'outdoor', variant: '1', path: '/assets/backgrounds/outdoor-1.jpg', tags: ['scene-outdoor'] },
@@ -34,10 +32,8 @@ export const PRESEEDED_BACKGROUNDS: PreseededAsset[] = [
 
   // Lifestyle
   { setting: 'lifestyle', variant: '2', path: '/assets/backgrounds/lifestyle-2.jpg', tags: ['scene-lifestyle'] },
-  { setting: 'lifestyle', variant: '3', path: '/assets/backgrounds/lifestyle-3.jpg', tags: ['scene-lifestyle'] },
 
   // Bedroom
-  { setting: 'bedroom', variant: '1', path: '/assets/backgrounds/bedroom-1.jpg', tags: ['scene-bedroom'] },
   { setting: 'bedroom', variant: '2', path: '/assets/backgrounds/bedroom-2.jpg', tags: ['scene-bedroom'] },
   { setting: 'bedroom', variant: '3', path: '/assets/backgrounds/bedroom-3.jpg', tags: ['scene-bedroom'] },
 
@@ -50,8 +46,6 @@ export const PRESEEDED_BACKGROUNDS: PreseededAsset[] = [
   { setting: 'gym', variant: '1', path: '/assets/backgrounds/gym-1.jpg', tags: ['scene-gym'] },
   { setting: 'gym', variant: '3', path: '/assets/backgrounds/gym-3.jpg', tags: ['scene-gym'] },
 
-  // Office
-  { setting: 'office', variant: '3', path: '/assets/backgrounds/office-3.jpg', tags: ['scene-office'] },
 ];
 
 /** Track last used variant per setting to avoid repeats. */
