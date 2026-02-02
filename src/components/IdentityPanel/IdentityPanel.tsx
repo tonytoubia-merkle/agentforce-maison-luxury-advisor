@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { PERSONA_STUBS } from '@/mocks/customerPersonas';
 import type { PersonaStub } from '@/mocks/customerPersonas';
 import type { CustomerProfile } from '@/types/customer';
 import { useCustomer } from '@/contexts/CustomerContext';
+import { useMaison } from '@/contexts/MaisonContext';
+import { getPersonaStubs } from '@/mocks/maisonData';
 
 // ─── Helpers ────────────────────────────────────────────────────
 
@@ -88,10 +89,8 @@ function renderProfileSections(customer: CustomerProfile) {
 
   if (bp?.skinType) {
     sections.push(
-      <Section key="beauty" title="Beauty Profile" source="Contact" defaultOpen>
-        <Field label="Skin Type" value={bp.skinType} />
-        <Field label="Concerns" value={bp.concerns?.join(', ')} />
-        <Field label="Allergies" value={bp.allergies?.join(', ')} />
+      <Section key="beauty" title="Client Profile" source="Contact" defaultOpen>
+        <Field label="Interests" value={bp.concerns?.join(', ')} />
         <Field label="Preferred Brands" value={bp.preferredBrands?.join(', ')} />
       </Section>
     );
@@ -224,8 +223,10 @@ function renderProfileSections(customer: CustomerProfile) {
 export const IdentityPanel: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { selectPersona, customer, selectedPersonaId, isResolving, isLoading, refreshProfile, resetPersonaSession } = useCustomer();
+  const { maisonId } = useMaison();
 
-  const activeStub = PERSONA_STUBS.find((s) => s.id === selectedPersonaId);
+  const personaStubs = getPersonaStubs(maisonId);
+  const activeStub = personaStubs.find((s) => s.id === selectedPersonaId);
 
   const handleSelect = (personaId: string) => {
     selectPersona(personaId);
@@ -372,7 +373,7 @@ export const IdentityPanel: React.FC = () => {
                   <span className="text-[10px] text-white/30">Demo personas</span>
                 </div>
                 <div className="space-y-1.5">
-                  {PERSONA_STUBS.filter((s) => s.id !== activeStub?.id).map((stub) => {
+                  {personaStubs.filter((s) => s.id !== activeStub?.id).map((stub) => {
                     const label = getLabel(stub);
                     const subtitle = stub.defaultSubtitle;
                     return (

@@ -1,17 +1,20 @@
+import { MaisonProvider } from '@/contexts/MaisonContext';
 import { SceneProvider } from '@/contexts/SceneContext';
 import { ConversationProvider } from '@/contexts/ConversationContext';
 import { CustomerProvider } from '@/contexts/CustomerContext';
-import { ConciergePage } from '@/components/ConciergePage';
+import { MaisonPage } from '@/components/MaisonPage';
 
 function App() {
   return (
-    <CustomerProvider>
-      <SceneProvider>
-        <ConversationProvider>
-          <ConciergePage />
-        </ConversationProvider>
-      </SceneProvider>
-    </CustomerProvider>
+    <MaisonProvider>
+      <CustomerProvider>
+        <SceneProvider>
+          <ConversationProvider>
+            <MaisonPage />
+          </ConversationProvider>
+        </SceneProvider>
+      </CustomerProvider>
+    </MaisonProvider>
   );
 }
 

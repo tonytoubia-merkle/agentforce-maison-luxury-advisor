@@ -1,20 +1,15 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-
-const LOADING_MESSAGES = [
-  'Studying your beauty profile\u2026',
-  'Reviewing your recent favorites\u2026',
-  'Curating personalized picks\u2026',
-  'Preparing your experience\u2026',
-  'Setting the scene\u2026',
-];
+import { useMaison } from '@/contexts/MaisonContext';
 
 export const WelcomeLoader: React.FC = () => {
+  const { maison } = useMaison();
+  const loadingMessages = maison.loadingMessages;
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setIndex((prev) => (prev + 1) % LOADING_MESSAGES.length);
+      setIndex((prev) => (prev + 1) % loadingMessages.length);
     }, 2200);
     return () => clearInterval(interval);
   }, []);
@@ -48,7 +43,7 @@ export const WelcomeLoader: React.FC = () => {
             transition={{ duration: 0.4 }}
             className="text-white/60 text-sm font-light tracking-wide text-center"
           >
-            {LOADING_MESSAGES[index]}
+            {loadingMessages[index]}
           </motion.p>
         </AnimatePresence>
       </div>

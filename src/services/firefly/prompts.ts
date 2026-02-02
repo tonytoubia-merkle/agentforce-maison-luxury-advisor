@@ -1,6 +1,6 @@
 import type { SceneSetting } from '@/types/scene';
 
-export const SCENE_PROMPTS: Record<SceneSetting, string> = {
+export const SCENE_PROMPTS: Partial<Record<SceneSetting, string>> = {
   neutral:
     'Elegant minimalist empty surface with soft bokeh lights in the background, sophisticated neutral tones, studio lighting, clean uncluttered space',
 
@@ -30,7 +30,7 @@ export const SCENE_PROMPTS: Record<SceneSetting, string> = {
 };
 
 export function buildScenePrompt(setting: SceneSetting): string {
-  const base = SCENE_PROMPTS[setting];
+  const base = SCENE_PROMPTS[setting] || SCENE_PROMPTS.neutral;
   return `${base}. Empty background scene only, no products, no bottles, no cosmetics, no text or labels. Professional interior photography, elegant and luxurious atmosphere, soft diffused shadows, ultra high quality, photorealistic.`;
 }
 
@@ -39,7 +39,7 @@ export function buildScenePrompt(setting: SceneSetting): string {
  * The white background is then removed via CSS mix-blend-mode: multiply,
  * allowing the product to composite onto the scene background.
  */
-export const STAGING_PROMPTS: Record<SceneSetting, string> = {
+export const STAGING_PROMPTS: Partial<Record<SceneSetting, string>> = {
   neutral:
     'A single elegant skincare bottle, soft studio lighting from above and side, subtle shadow beneath the product',
 
@@ -69,6 +69,6 @@ export const STAGING_PROMPTS: Record<SceneSetting, string> = {
 };
 
 export function buildStagingPrompt(setting: SceneSetting): string {
-  const base = STAGING_PROMPTS[setting];
+  const base = STAGING_PROMPTS[setting] || STAGING_PROMPTS.neutral;
   return `${base}. Product centered on a perfectly pure white background. No other objects, no surface, no scene, no environment — ONLY the product on solid white. Professional e-commerce product photography, ultra high quality, photorealistic. No text, no labels, no logos.`;
 }

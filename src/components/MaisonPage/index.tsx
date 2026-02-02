@@ -1,0 +1,1 @@
+export { MaisonPage } from './MaisonPage';

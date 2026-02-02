@@ -2,7 +2,7 @@ import { useCallback, useRef } from 'react';
 import type { SceneSetting, KnownSceneSetting } from '@/types/scene';
 import type { Product } from '@/types/product';
 
-const KNOWN_GRADIENTS: Record<KnownSceneSetting, string> = {
+const KNOWN_GRADIENTS: Record<string, string> = {
   neutral: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)',
   bathroom: 'linear-gradient(135deg, #e8d5c4 0%, #c9b8a8 40%, #a89080 100%)',
   travel: 'linear-gradient(135deg, #2d6a4f 0%, #40916c 40%, #74c69d 100%)',
@@ -12,6 +12,16 @@ const KNOWN_GRADIENTS: Record<KnownSceneSetting, string> = {
   vanity: 'linear-gradient(135deg, #d4a5a5 0%, #c48b9f 50%, #9e6b8a 100%)',
   gym: 'linear-gradient(135deg, #2c3e50 0%, #4a6572 50%, #6a8ea0 100%)',
   office: 'linear-gradient(135deg, #e8e8e0 0%, #c8c8c0 50%, #a8a8a0 100%)',
+  // Luxury / Maison settings
+  boutique: 'linear-gradient(135deg, #1a1208 0%, #3d2b1f 40%, #6b4f3a 100%)',
+  showroom: 'linear-gradient(135deg, #2c2c2c 0%, #4a4a4a 50%, #6b6b6b 100%)',
+  atelier: 'linear-gradient(135deg, #f5f0e8 0%, #d4c5a9 50%, #b8a88a 100%)',
+  // Spirits / Maison des Esprits settings
+  cellar: 'linear-gradient(135deg, #1a0f0a 0%, #3d1f10 40%, #5c3018 100%)',
+  lounge: 'linear-gradient(135deg, #1a1520 0%, #2d2040 50%, #4a3060 100%)',
+  'tasting-room': 'linear-gradient(135deg, #2c1810 0%, #4a3020 50%, #6b4830 100%)',
+  vineyard: 'linear-gradient(135deg, #2d4a2f 0%, #4a7a3f 50%, #7aaa60 100%)',
+  terrace: 'linear-gradient(135deg, #e8d5c4 0%, #c9b090 50%, #a89060 100%)',
 };
 
 /** Get fallback gradient for a setting. Unknown/dynamic settings fall back to neutral. */
@@ -32,6 +42,9 @@ function getProvider(): ImageProvider {
 const KNOWN_SETTINGS = new Set<string>([
   'neutral', 'bathroom', 'travel', 'outdoor', 'lifestyle',
   'bedroom', 'vanity', 'gym', 'office',
+  // Luxury & spirits settings
+  'boutique', 'showroom', 'atelier',
+  'cellar', 'lounge', 'tasting-room', 'vineyard', 'terrace',
 ]);
 
 // Patterns that indicate a truly novel/specific scene worth generating

@@ -1,7 +1,10 @@
-import React, { createContext, useContext, useState, useCallback, useRef } from 'react';
+import React, { createContext, useContext, useState, useCallback, useRef, useEffect } from 'react';
 import type { CustomerProfile } from '@/types/customer';
 import { resolveMerkuryIdentity } from '@/services/merkury/mockTag';
-import { getPersonaById } from '@/mocks/customerPersonas';
+import { getPersonaById as getPersonaByIdLegacy } from '@/mocks/customerPersonas';
+import { getPersonaById as getPersonaByIdMaison } from '@/mocks/maisonData';
+import { useMaison } from './MaisonContext';
+import type { MaisonId } from '@/types/maison';
 import { getDataCloudService } from '@/services/datacloud';
 
 const useMockData = import.meta.env.VITE_USE_MOCK_DATA !== 'false';
@@ -24,11 +27,13 @@ interface CustomerContextValue {
 const CustomerContext = createContext<CustomerContextValue | null>(null);
 
 export const CustomerProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { maisonId } = useMaison();
   const [customer, setCustomer] = useState<CustomerProfile | null>(null);
   const [selectedPersonaId, setSelectedPersonaId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isResolving, setIsResolving] = useState(false);
   const [error, setError] = useState<Error | null>(null);
+  const prevMaisonIdRef = useRef<MaisonId>(maisonId);
   /** When true, the next customer update is a profile refresh — don't reset conversation. */
   const isRefreshRef = useRef(false);
   /** Callbacks registered by ConversationContext to clear a persona's cached session. */
@@ -39,6 +44,15 @@ export const CustomerProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     sessionResetCallbacksRef.current.add(cb);
     return () => { sessionResetCallbacksRef.current.delete(cb); };
   }, []);
+
+  // When maison changes, clear customer state so persona panel resets
+  useEffect(() => {
+    if (prevMaisonIdRef.current !== maisonId) {
+      prevMaisonIdRef.current = maisonId;
+      setCustomer(null);
+      setSelectedPersonaId(null);
+    }
+  }, [maisonId]);
 
   const selectPersona = useCallback(async (personaId: string) => {
     setSelectedPersonaId(personaId);
@@ -85,7 +99,7 @@ export const CustomerProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         setCustomer(null);
       } else if (useMockData) {
         // MOCK MODE: Load known profiles from mock personas
-        const persona = getPersonaById(personaId);
+        const persona = getPersonaByIdMaison(maisonId, personaId) || getPersonaByIdLegacy(personaId);
         if (persona) {
           setCustomer(persona.profile);
         } else {
@@ -110,7 +124,7 @@ export const CustomerProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         } catch (dcError) {
           console.error('[datacloud] Profile fetch failed:', dcError);
           console.warn('[datacloud] Falling back to mock persona data');
-          const persona = getPersonaById(personaId);
+          const persona = getPersonaByIdMaison(maisonId, personaId) || getPersonaByIdLegacy(personaId);
           if (persona) {
             const fallback = { ...persona.profile, merkuryIdentity };
             setCustomer(fallback);

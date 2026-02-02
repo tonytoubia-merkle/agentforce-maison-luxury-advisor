@@ -67,7 +67,7 @@ export const CheckoutOverlay: React.FC = () => {
               ))}
               <p className="font-semibold text-gray-900 mt-2">Total: ${total.toFixed(2)}</p>
             </div>
-            <Button onClick={handleDone} size="lg" className="w-full bg-purple-600 hover:bg-purple-700 text-white">
+            <Button onClick={handleDone} size="lg" className="w-full bg-amber-800 hover:bg-amber-900 text-white">
               Done
             </Button>
           </div>
@@ -123,7 +123,7 @@ export const CheckoutOverlay: React.FC = () => {
               onClick={handleConfirmPurchase}
               disabled={checkoutState === 'processing'}
               size="lg"
-              className="w-full bg-purple-600 hover:bg-purple-700 text-white"
+              className="w-full bg-amber-800 hover:bg-amber-900 text-white"
             >
               {checkoutState === 'processing' ? (
                 <span className="flex items-center justify-center gap-2">

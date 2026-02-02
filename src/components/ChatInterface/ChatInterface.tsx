@@ -5,6 +5,7 @@ import { ChatInput } from './ChatInput';
 import { ChatMessages } from './ChatMessages';
 import { TypingIndicator } from './TypingIndicator';
 import { SuggestedActions } from './SuggestedActions';
+import { useMaison } from '@/contexts/MaisonContext';
 import type { AgentMessage } from '@/types/agent';
 import type { SceneLayout } from '@/types/scene';
 
@@ -28,6 +29,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
   sceneLayout,
 }) => {
   const [inputValue, setInputValue] = useState('');
+  const { maison } = useMaison();
 
   const handleSubmit = () => {
     if (inputValue.trim()) {
@@ -65,10 +67,10 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
           className="text-center mb-6"
         >
           <h1 className="text-3xl font-light text-white mb-1">
-            I'm your beauty concierge
+            {maison.welcomeHeadline}
           </h1>
           <p className="text-white/70 text-base">
-            How can I help you today?
+            {maison.welcomeSubtext}
           </p>
         </motion.div>
 
@@ -81,7 +83,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
             value={inputValue}
             onChange={setInputValue}
             onSubmit={handleSubmit}
-            placeholder="Ask me anything..."
+            placeholder={maison.chatPlaceholder}
             isCentered
           />
         </div>
@@ -119,7 +121,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
           value={inputValue}
           onChange={setInputValue}
           onSubmit={handleSubmit}
-          placeholder="Ask me anything..."
+          placeholder={maison.chatPlaceholder}
           isCentered={false}
         />
       </div>

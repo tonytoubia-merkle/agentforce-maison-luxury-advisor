@@ -7,6 +7,19 @@ import { useScene } from './SceneContext';
 import { useCustomer } from './CustomerContext';
 import { generateMockResponse, setMockCustomerContext, getMockAgentSnapshot, restoreMockAgentSnapshot } from '@/services/mock/mockAgent';
 import type { MockAgentSnapshot } from '@/services/mock/mockAgent';
+import { generateMaisonMockResponse, setMaisonMockContext, getMaisonMockSnapshot, restoreMaisonMockSnapshot } from '@/services/mock/maisonMockAgent';
+import type { MaisonMockSnapshot } from '@/services/mock/maisonMockAgent';
+import type { MaisonId } from '@/types/maison';
+import { useMaison } from './MaisonContext';
+
+/** Safe wrapper — returns default if MaisonContext isn't available yet. */
+function useMaisonSafe(): { maisonId: MaisonId } {
+  try {
+    return useMaison();
+  } catch {
+    return { maisonId: 'lv' };
+  }
+}
 import type { AgentResponse } from '@/types/agent';
 import { getAgentforceClient } from '@/services/agentforce/client';
 import { getDataCloudWriteService } from '@/services/datacloud';
@@ -24,7 +37,9 @@ interface SessionSnapshot {
   agentSessionId: string | null;
   agentSequenceId: number;
   mockSnapshot: MockAgentSnapshot | null;
+  maisonMockSnapshot: MaisonMockSnapshot | null;
   sessionInitialized: boolean;
+  maisonId?: MaisonId;
 }
 
 function buildSessionContext(customer: CustomerProfile): CustomerSessionContext {
@@ -255,8 +270,12 @@ function buildWelcomeMessage(ctx: CustomerSessionContext): string {
   return lines.join('\n');
 }
 
-async function getAgentResponse(content: string): Promise<AgentResponse> {
+async function getAgentResponse(content: string, maisonId?: MaisonId): Promise<AgentResponse> {
   if (useMockData) {
+    // Use maison mock agent for maison-specific experiences
+    if (maisonId) {
+      return generateMaisonMockResponse(content);
+    }
     return generateMockResponse(content);
   }
   const client = getAgentforceClient();
@@ -288,15 +307,21 @@ function writeConversationSummary(customerId: string, msgs: AgentMessage[]): voi
 function extractTopicsFromMessages(msgs: AgentMessage[]): string[] {
   const allText = msgs.map((m) => m.content.toLowerCase()).join(' ');
   const topics: string[] = [];
-  if (allText.includes('moisturizer') || allText.includes('hydrat')) topics.push('moisturizer');
-  if (allText.includes('serum') || allText.includes('retinol')) topics.push('serum');
-  if (allText.includes('cleanser')) topics.push('cleanser');
-  if (allText.includes('sunscreen') || allText.includes('spf')) topics.push('sun protection');
+  // Luxury / Leather goods
+  if (allText.includes('handbag') || allText.includes('leather') || allText.includes('bag')) topics.push('leather goods');
+  if (allText.includes('wallet') || allText.includes('card holder')) topics.push('small leather goods');
+  if (allText.includes('jewelry') || allText.includes('necklace') || allText.includes('bracelet')) topics.push('jewelry');
+  // Spirits
+  if (allText.includes('champagne') || allText.includes('bubbly')) topics.push('champagne');
+  if (allText.includes('cognac') || allText.includes('hennessy')) topics.push('cognac');
+  if (allText.includes('whisky') || allText.includes('scotch')) topics.push('whisky');
+  if (allText.includes('wine') || allText.includes('rosé') || allText.includes('rose')) topics.push('wine');
+  // Shared
   if (allText.includes('fragrance') || allText.includes('perfume')) topics.push('fragrance');
   if (allText.includes('travel')) topics.push('travel');
-  if (allText.includes('gift') || allText.includes('anniversary')) topics.push('gifting');
-  if (allText.includes('routine')) topics.push('skincare routine');
-  if (allText.includes('checkout') || allText.includes('buy')) topics.push('purchase intent');
+  if (allText.includes('gift') || allText.includes('anniversary') || allText.includes('birthday')) topics.push('gifting');
+  if (allText.includes('checkout') || allText.includes('buy') || allText.includes('purchase')) topics.push('purchase intent');
+  if (allText.includes('cocktail') || allText.includes('pairing')) topics.push('lifestyle');
   return topics.length ? topics : ['general inquiry'];
 }
 
@@ -315,13 +340,10 @@ export const ConversationProvider: React.FC<{ children: React.ReactNode }> = ({ 
   const [messages, setMessages] = useState<AgentMessage[]>([]);
   const [isAgentTyping, setIsAgentTyping] = useState(false);
   const [isLoadingWelcome, setIsLoadingWelcome] = useState(false);
-  const [suggestedActions, setSuggestedActions] = useState<string[]>([
-    'Show me moisturizers',
-    'I need travel products',
-    'What do you recommend?',
-  ]);
+  const [suggestedActions, setSuggestedActions] = useState<string[]>([]);
   const { processUIDirective, resetScene, getSceneSnapshot, restoreSceneSnapshot } = useScene();
   const { customer, selectedPersonaId, _isRefreshRef, _onSessionReset } = useCustomer();
+  const { maisonId: activeMaisonId } = useMaisonSafe();
   const messagesRef = useRef<AgentMessage[]>([]);
   const suggestedActionsRef = useRef<string[]>([]);
   const prevCustomerIdRef = useRef<string | null>(null);
@@ -365,7 +387,9 @@ export const ConversationProvider: React.FC<{ children: React.ReactNode }> = ({ 
       agentSessionId: agentSnap.sessionId,
       agentSequenceId: agentSnap.sequenceId,
       mockSnapshot: useMockData ? getMockAgentSnapshot() : null,
+      maisonMockSnapshot: useMockData ? getMaisonMockSnapshot() : null,
       sessionInitialized,
+      maisonId: activeMaisonId,
     };
     sessionCacheRef.current.set(personaId, snapshot);
     console.log('[session] Saved session for', personaId, `(${snapshot.messages.length} messages)`);
@@ -391,11 +415,7 @@ export const ConversationProvider: React.FC<{ children: React.ReactNode }> = ({ 
       // Anonymous / no identity — reset to default starting page
       resetScene();
       setMessages([]);
-      setSuggestedActions([
-        'Show me moisturizers',
-        'I need travel products',
-        'What do you recommend?',
-      ]);
+      setSuggestedActions([]);
       setIsLoadingWelcome(false);
       return;
     }
@@ -414,6 +434,9 @@ export const ConversationProvider: React.FC<{ children: React.ReactNode }> = ({ 
       // Restore agent client state
       if (useMockData && cached.mockSnapshot) {
         restoreMockAgentSnapshot(cached.mockSnapshot);
+        if (cached.maisonMockSnapshot) {
+          restoreMaisonMockSnapshot(cached.maisonMockSnapshot);
+        }
       } else if (cached.agentSessionId) {
         getAgentforceClient().restoreSession(cached.agentSessionId, cached.agentSequenceId);
       }
@@ -426,6 +449,7 @@ export const ConversationProvider: React.FC<{ children: React.ReactNode }> = ({ 
 
     if (useMockData) {
       setMockCustomerContext(sessionCtx);
+      setMaisonMockContext(sessionCtx, activeMaisonId);
     } else {
       sessionInitialized = false;
     }
@@ -449,7 +473,7 @@ export const ConversationProvider: React.FC<{ children: React.ReactNode }> = ({ 
             console.error('Failed to init session:', err);
           }
         }
-        const response = await getAgentResponse(welcomeMsg);
+        const response = await getAgentResponse(welcomeMsg, activeMaisonId);
 
         // The real Agentforce agent may return CHANGE_SCENE or SHOW_PRODUCTS
         // instead of WELCOME_SCENE on the first message. Since we know this IS
@@ -492,9 +516,9 @@ export const ConversationProvider: React.FC<{ children: React.ReactNode }> = ({ 
           if (sessionCtx.identityTier === 'known' && sessionCtx.recentPurchases?.length) {
             actions = ['Restock my favorites', "What's new for me?", 'Show me something different'];
           } else if (sessionCtx.identityTier === 'appended') {
-            actions = ['What do you recommend?', 'Show me bestsellers', 'Help me find my routine'];
+            actions = ['What do you recommend?', 'Show me bestsellers', 'I need a gift'];
           } else {
-            actions = ['Show me moisturizers', 'I need travel products', 'What do you recommend?'];
+            actions = ['What do you recommend?', 'Show me bestsellers', 'I need a gift'];
           }
         }
         setSuggestedActions(actions);
@@ -510,7 +534,7 @@ export const ConversationProvider: React.FC<{ children: React.ReactNode }> = ({ 
     }, 300);
 
     return () => clearTimeout(timer);
-  }, [customer, selectedPersonaId]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [customer, selectedPersonaId, activeMaisonId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const sendMessage = useCallback(async (content: string) => {
     const userMessage: AgentMessage = {
@@ -524,7 +548,7 @@ export const ConversationProvider: React.FC<{ children: React.ReactNode }> = ({ 
     setIsAgentTyping(true);
 
     try {
-      const response = await getAgentResponse(content);
+      const response = await getAgentResponse(content, activeMaisonId);
 
       // If the agent returns a WELCOME_SCENE during a normal conversation
       // (user typed a message), downgrade it to CHANGE_SCENE so products

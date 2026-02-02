@@ -14,7 +14,17 @@ export type KnownSceneSetting =
   | 'bedroom'
   | 'vanity'
   | 'gym'
-  | 'office';
+  | 'office'
+  // Luxury / Maison settings
+  | 'boutique'
+  | 'showroom'
+  | 'atelier'
+  // Spirits / Maison des Esprits settings
+  | 'cellar'
+  | 'lounge'
+  | 'tasting-room'
+  | 'vineyard'
+  | 'terrace';
 
 /**
  * Scene setting can be a well-known value OR a free-form string from the agent.
