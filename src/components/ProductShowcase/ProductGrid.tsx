@@ -11,14 +11,14 @@ const containerVariants = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.1,
+      staggerChildren: 0.08,
     },
   },
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0 },
+  hidden: { opacity: 0, x: 20 },
+  visible: { opacity: 1, x: 0 },
 };
 
 export const ProductGrid: React.FC<ProductGridProps> = ({ products }) => {
@@ -27,10 +27,10 @@ export const ProductGrid: React.FC<ProductGridProps> = ({ products }) => {
       variants={containerVariants}
       initial="hidden"
       animate="visible"
-      className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-2xl"
+      className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide snap-x snap-mandatory"
     >
       {products.map((product) => (
-        <motion.div key={product.id} variants={itemVariants}>
+        <motion.div key={product.id} variants={itemVariants} className="snap-start">
           <ProductCard product={product} />
         </motion.div>
       ))}

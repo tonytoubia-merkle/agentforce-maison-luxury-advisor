@@ -75,7 +75,7 @@ global with sharing class ProductCatalogService {
     private static List<ProductResult> executeSearch(ProductSearchRequest request) {
         String soql = 'SELECT Id, Name, Brand__c, Category__c, Price__c, Description__c, ' +
                        'Image_URL__c, Skin_Types__c, Concerns__c, Rating__c, Is_Travel__c, In_Stock__c ' +
-                       'FROM Product2 WHERE IsActive = true';
+                       'FROM Product2 WHERE IsActive = true AND Category__c != null';
 
         List<String> conditions = new List<String>();
 

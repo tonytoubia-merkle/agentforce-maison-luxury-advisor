@@ -12,41 +12,38 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
   return (
     <motion.div
-      whileHover={{ y: -8, scale: 1.02 }}
+      whileHover={{ y: -4, scale: 1.03 }}
       transition={{ duration: 0.2 }}
-      className="rounded-2xl overflow-hidden cursor-pointer group"
+      className="w-36 flex-shrink-0 rounded-xl overflow-hidden bg-white/5 backdrop-blur-sm border border-white/10 cursor-pointer"
     >
-      <div className="relative aspect-square">
+      <div className="relative w-full h-28">
         <img
           src={product.imageUrl}
           alt={product.name}
-          className="w-full h-full object-contain product-blend"
+          className="w-full h-full object-contain product-blend p-2"
         />
         {product.attributes?.isTravel && (
-          <Badge className="absolute top-3 left-3 bg-blue-500">
-            Travel Size
+          <Badge className="absolute top-1.5 left-1.5 bg-blue-500 text-[9px] px-1.5 py-0.5">
+            Travel
           </Badge>
         )}
       </div>
 
-      <div className="p-3 text-white">
-        <span className="text-white/60 text-[10px] uppercase tracking-wider">
+      <div className="px-2.5 pb-2.5 pt-1 text-white">
+        <span className="text-white/50 text-[9px] uppercase tracking-wider block truncate">
           {product.brand}
         </span>
-        <h3 className="font-medium text-sm mt-0.5 line-clamp-2">
+        <h3 className="font-medium text-[11px] mt-0.5 line-clamp-2 leading-tight min-h-[2.25rem]">
           {product.name}
         </h3>
-        <p className="text-white/70 text-xs mt-1 line-clamp-2">
-          {product.shortDescription}
-        </p>
 
-        <div className="flex items-center justify-between mt-2">
-          <span className="text-base font-light">
+        <div className="flex items-center justify-between mt-1.5">
+          <span className="text-xs font-medium">
             ${(product.price ?? 0).toFixed(2)}
           </span>
           <button
             onClick={() => openCheckout()}
-            className="px-3 py-1 bg-white/20 hover:bg-white/30 rounded-full text-xs transition-colors"
+            className="px-2 py-0.5 bg-white/20 hover:bg-white/30 rounded-full text-[10px] transition-colors"
           >
             Add
           </button>
