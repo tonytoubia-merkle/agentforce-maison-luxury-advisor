@@ -350,6 +350,7 @@ export const ConversationProvider: React.FC<{ children: React.ReactNode }> = ({ 
   const suggestedActionsRef = useRef<string[]>([]);
   const prevCustomerIdRef = useRef<string | null>(null);
   const prevPersonaIdRef = useRef<string | null>(null);
+  const prevMaisonIdRef = useRef<MaisonId>(activeMaisonId);
   const sessionCacheRef = useRef<Map<string, SessionSnapshot>>(new Map());
 
   // Keep refs in sync
@@ -363,8 +364,10 @@ export const ConversationProvider: React.FC<{ children: React.ReactNode }> = ({ 
   // Register for session reset notifications from CustomerContext
   useEffect(() => {
     return _onSessionReset((personaId: string) => {
-      sessionCacheRef.current.delete(personaId);
-      console.log('[session] Cleared cached session for', personaId);
+      // Clear sessions for this persona across all maisons
+      const keysToDelete = [...sessionCacheRef.current.keys()].filter(k => k.endsWith(`:${personaId}`));
+      keysToDelete.forEach(k => sessionCacheRef.current.delete(k));
+      console.log('[session] Cleared cached sessions for', personaId, `(${keysToDelete.length} sessions)`);
     });
   }, [_onSessionReset]);
 
@@ -378,8 +381,11 @@ export const ConversationProvider: React.FC<{ children: React.ReactNode }> = ({ 
     }
   }, [customer?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  /** Build a cache key that includes maison ID so sessions are isolated per maison+persona. */
+  const buildCacheKey = useCallback((maisonId: MaisonId, personaId: string) => `${maisonId}:${personaId}`, []);
+
   // Helper: save current persona's state into the session cache
-  const saveCurrentSession = useCallback((personaId: string) => {
+  const saveCurrentSession = useCallback((personaId: string, maisonId: MaisonId) => {
     const client = getAgentforceClient();
     const agentSnap = client.getSessionSnapshot();
     const snapshot: SessionSnapshot = {
@@ -391,13 +397,14 @@ export const ConversationProvider: React.FC<{ children: React.ReactNode }> = ({ 
       mockSnapshot: useMockData ? getMockAgentSnapshot() : null,
       maisonMockSnapshot: useMockData ? getMaisonMockSnapshot() : null,
       sessionInitialized,
-      maisonId: activeMaisonId,
+      maisonId,
     };
-    sessionCacheRef.current.set(personaId, snapshot);
-    console.log('[session] Saved session for', personaId, `(${snapshot.messages.length} messages)`);
-  }, [getSceneSnapshot]);
+    const cacheKey = buildCacheKey(maisonId, personaId);
+    sessionCacheRef.current.set(cacheKey, snapshot);
+    console.log('[session] Saved session for', cacheKey, `(${snapshot.messages.length} messages)`);
+  }, [getSceneSnapshot, buildCacheKey]);
 
-  // When persona changes, reset conversation and trigger welcome
+  // When persona or maison changes, save/restore session state
   useEffect(() => {
     // If this is a profile refresh (not a persona switch), skip session reset
     if (_isRefreshRef.current) {
@@ -406,11 +413,15 @@ export const ConversationProvider: React.FC<{ children: React.ReactNode }> = ({ 
     }
 
     const prevPersonaId = prevPersonaIdRef.current;
+    const prevMaisonId = prevMaisonIdRef.current;
     prevPersonaIdRef.current = selectedPersonaId;
+    prevMaisonIdRef.current = activeMaisonId;
 
-    // Save outgoing persona's session (if any)
-    if (prevPersonaId && prevPersonaId !== selectedPersonaId && messagesRef.current.length > 0) {
-      saveCurrentSession(prevPersonaId);
+    // Save outgoing persona's session (if any) — use previous maison for correct cache key
+    const personaChanged = prevPersonaId !== selectedPersonaId;
+    const maisonChanged = prevMaisonId !== activeMaisonId;
+    if (prevPersonaId && (personaChanged || maisonChanged) && messagesRef.current.length > 0) {
+      saveCurrentSession(prevPersonaId, prevMaisonId);
     }
 
     if (!customer) {
@@ -422,12 +433,13 @@ export const ConversationProvider: React.FC<{ children: React.ReactNode }> = ({ 
       return;
     }
 
-    // Check if we have a cached session for this persona
-    const cached = selectedPersonaId ? sessionCacheRef.current.get(selectedPersonaId) : null;
+    // Check if we have a cached session for this maison+persona combination
+    const cacheKey = selectedPersonaId ? buildCacheKey(activeMaisonId, selectedPersonaId) : null;
+    const cached = cacheKey ? sessionCacheRef.current.get(cacheKey) : null;
 
     if (cached) {
       // ── Restore cached session instantly ──
-      console.log('[session] Restoring cached session for', selectedPersonaId, `(${cached.messages.length} messages)`);
+      console.log('[session] Restoring cached session for', cacheKey, `(${cached.messages.length} messages)`);
       setMessages(cached.messages);
       setSuggestedActions(cached.suggestedActions);
       restoreSceneSnapshot(cached.sceneSnapshot);

@@ -42,6 +42,12 @@ export const CustomerProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const isRefreshRef = useRef(false);
   /** Callbacks registered by ConversationContext to clear a persona's cached session. */
   const sessionResetCallbacksRef = useRef<Set<(personaId: string) => void>>(new Set());
+  /** Track last selected persona per maison for instant restore on switch. */
+  const lastPersonaPerMaisonRef = useRef<Map<MaisonId, string>>(new Map());
+  /** Track customer profile per maison for instant restore. */
+  const customerPerMaisonRef = useRef<Map<MaisonId, CustomerProfile | null>>(new Map());
+  /** Flag to indicate maison switch (don't re-trigger welcome). */
+  const isMaisonSwitchRef = useRef(false);
 
   /** Register a callback to be notified when a persona session should be reset. */
   const onSessionReset = useCallback((cb: (personaId: string) => void) => {
@@ -49,14 +55,42 @@ export const CustomerProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     return () => { sessionResetCallbacksRef.current.delete(cb); };
   }, []);
 
-  // When maison changes, clear customer state so persona panel resets
+  // When maison changes, save current state and restore previous state for new maison
   useEffect(() => {
     if (prevMaisonIdRef.current !== maisonId) {
+      const prevMaison = prevMaisonIdRef.current;
+
+      // Save current persona + customer for the previous maison
+      if (selectedPersonaId) {
+        lastPersonaPerMaisonRef.current.set(prevMaison, selectedPersonaId);
+        customerPerMaisonRef.current.set(prevMaison, customer);
+      }
+
       prevMaisonIdRef.current = maisonId;
-      setCustomer(null);
-      setSelectedPersonaId(null);
+
+      // Restore previous state for the new maison, or default to anonymous
+      const savedPersonaId = lastPersonaPerMaisonRef.current.get(maisonId);
+      const savedCustomer = customerPerMaisonRef.current.get(maisonId);
+
+      if (savedPersonaId && savedCustomer !== undefined) {
+        // Restore saved state instantly (no re-fetch needed)
+        isMaisonSwitchRef.current = true;
+        isRefreshRef.current = true;
+        setSelectedPersonaId(savedPersonaId);
+        setCustomer(savedCustomer);
+        // Reset flags after state update
+        setTimeout(() => {
+          isMaisonSwitchRef.current = false;
+          isRefreshRef.current = false;
+        }, 0);
+      } else {
+        // No saved state — select anonymous for this maison
+        const anonymousId = maisonId === 'lv' ? 'lv-anonymous' : 'mh-anonymous';
+        setSelectedPersonaId(anonymousId);
+        setCustomer(null);
+      }
     }
-  }, [maisonId]);
+  }, [maisonId, selectedPersonaId, customer]);
 
   const selectPersona = useCallback(async (personaId: string) => {
     setSelectedPersonaId(personaId);
@@ -229,13 +263,14 @@ export const CustomerProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }
   }, [maisonId]);
 
-  // Auto-select anonymous persona on mount
+  // Auto-select anonymous persona on initial mount only
   useEffect(() => {
-    if (!selectedPersonaId) {
+    // Only run on first mount when no persona is selected yet
+    if (!selectedPersonaId && !lastPersonaPerMaisonRef.current.has(maisonId)) {
       const anonymousId = maisonId === 'lv' ? 'lv-anonymous' : 'mh-anonymous';
       selectPersona(anonymousId);
     }
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <CustomerContext.Provider value={{
