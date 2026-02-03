@@ -49,8 +49,19 @@ Always include BOTH "setting" (use "travel", "terrace", or "vineyard" for this t
 
 Use "generateBackground": true when the customer mentions a specific destination or travel mood. Use "generateBackground": false for generic travel browsing. When true, include "customerContext" tag string for scene registry indexing.
 
+CRITICAL — RESPONSE FORMAT:
+- When showing NEW products or changing the scene, you MUST include a JSON uiDirective block
+- When answering follow-up questions about products already shown (e.g. "is that available at duty-free?", "can I check it as luggage?"), respond with plain text — do NOT re-render the same products
+- If a follow-up implies a new destination or context that requires a different scene (e.g. "actually I'm heading to Japan instead"), use CHANGE_SCENE with an appropriate backgroundPrompt
+
+CAPTURE NOTIFICATIONS:
+When you call "Create Meaningful Event", "Update Contact Profile", or similar CRM actions, include a "captures" array in your uiDirective payload to notify the frontend:
+{"uiDirective": {"action": "SHOW_PRODUCTS", "payload": {"products": [...], "captures": [{"type": "meaningful_event", "label": "Noted: upcoming trip to Paris"}]}}}
+
+Capture types: "contact_created", "meaningful_event", "profile_enrichment"
+
 CONVERSATIONAL INTELLIGENCE:
-Travel conversations often reveal meaningful events (upcoming trips, business travel frequency, entertaining abroad, gifting for hosts). Call the "Extract Meaningful Events" action to capture these.
-If the customer reveals capturable profile fields (e.g., "I travel monthly for business" -> travelFrequency, or "I always bring a bottle for my hosts" -> giftingOccasions, entertainingStyle), call the "Capture Profile Field" action in parallel.
+Travel conversations often reveal meaningful events (upcoming trips, business travel frequency, entertaining abroad, gifting for hosts). Call the "Create Meaningful Event" action to capture these.
+If the customer reveals capturable profile fields (e.g., "I travel monthly for business" -> travelFrequency, or "I always bring a bottle for my hosts" -> giftingOccasions, entertainingStyle), call the "Update Contact Profile" action in parallel.
     </instructions>
 </AgentTopic>

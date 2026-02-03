@@ -245,6 +245,66 @@ export class DataCloudCustomerService {
     };
   }
 
+  /** Look up a customer profile by email address. */
+  async getCustomerProfileByEmail(email: string): Promise<CustomerProfile | null> {
+    const contactData = await this.fetchJson(
+      `/services/data/v60.0/query/?q=SELECT+Id,FirstName,LastName,Email,Merkury_Id__c,Style_Preference__c,Concerns__c,Allergies__c,Preferred_Brands__c,MailingStreet,MailingCity,MailingState,MailingPostalCode,MailingCountry+FROM+Contact+WHERE+Email='${encodeURIComponent(email)}'+LIMIT+1`
+    );
+
+    const records = contactData.records || [];
+    if (records.length === 0) return null;
+
+    const raw = records[0];
+    const contactId = raw.Id;
+
+    const parseSemicolon = (val: string | null | undefined): string[] =>
+      val ? val.split(';').map((s: string) => s.trim()).filter(Boolean) : [];
+
+    const [orders, chatSummaries, meaningfulEvents, browseSessions, loyalty, agentCapturedProfile] =
+      await Promise.all([
+        this.getCustomerOrders(contactId).catch(() => [] as OrderRecord[]),
+        this.getCustomerChatSummaries(contactId).catch(() => [] as ChatSummary[]),
+        this.getCustomerMeaningfulEvents(contactId).catch(() => [] as MeaningfulEvent[]),
+        this.getCustomerBrowseSessions(contactId).catch(() => [] as BrowseSession[]),
+        this.getCustomerLoyalty(contactId).catch(() => null),
+        this.getCustomerCapturedProfile(contactId).catch(() => undefined),
+      ]);
+
+    return {
+      id: contactId,
+      name: raw.FirstName || 'Guest',
+      email: raw.Email || '',
+      luxuryProfile: {
+        stylePreference: (raw.Style_Preference__c || 'normal').toLowerCase(),
+        concerns: parseSemicolon(raw.Concerns__c),
+        allergies: parseSemicolon(raw.Allergies__c),
+        preferredBrands: parseSemicolon(raw.Preferred_Brands__c),
+        ageRange: '',
+      },
+      orders,
+      chatSummaries,
+      meaningfulEvents,
+      browseSessions,
+      loyalty,
+      agentCapturedProfile,
+      merkuryIdentity: undefined,
+      appendedProfile: undefined,
+      purchaseHistory: [],
+      savedPaymentMethods: [],
+      shippingAddresses: raw.MailingStreet ? [{
+        id: 'primary',
+        name: `${raw.FirstName} ${raw.LastName}`,
+        line1: raw.MailingStreet,
+        city: raw.MailingCity || '',
+        state: raw.MailingState || '',
+        postalCode: raw.MailingPostalCode || '',
+        country: raw.MailingCountry || '',
+        isDefault: true,
+      }] : [],
+      travelPreferences: undefined,
+    };
+  }
+
   async getCustomerCapturedProfile(customerId: string): Promise<AgentCapturedProfile | undefined> {
     const data = await this.fetchJson(
       `/services/data/v60.0/query/?q=SELECT+Field_Name__c,Field_Value__c,Captured_At__c,Captured_From__c,Confidence__c,Data_Type__c+FROM+Agent_Captured_Profile__c+WHERE+Customer_Id__c='${customerId}'`

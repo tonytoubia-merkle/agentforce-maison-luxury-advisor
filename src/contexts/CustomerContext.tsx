@@ -2,7 +2,9 @@ import React, { createContext, useContext, useState, useCallback, useRef, useEff
 import type { CustomerProfile } from '@/types/customer';
 import { resolveMerkuryIdentity } from '@/services/merkury/mockTag';
 import { getPersonaById as getPersonaByIdLegacy } from '@/mocks/customerPersonas';
-import { getPersonaById as getPersonaByIdMaison } from '@/mocks/maisonData';
+import { getPersonaById as getPersonaByIdMaison, getPersonas } from '@/mocks/maisonData';
+
+const PERSONAS = { lv: getPersonas('lv'), mh: getPersonas('mh') };
 import { useMaison } from './MaisonContext';
 import type { MaisonId } from '@/types/maison';
 import { getDataCloudService } from '@/services/datacloud';
@@ -18,6 +20,8 @@ interface CustomerContextValue {
   selectPersona: (personaId: string) => Promise<void>;
   refreshProfile: () => Promise<void>;
   resetPersonaSession: (personaId: string) => void;
+  /** Identify an anonymous user by email mid-conversation. */
+  identifyByEmail: (email: string) => Promise<boolean>;
   /** @internal Used by ConversationContext to detect refresh vs switch. */
   _isRefreshRef: React.MutableRefObject<boolean>;
   /** @internal Register callback for session reset notifications. */
@@ -161,10 +165,82 @@ export const CustomerProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }
   }, [selectedPersonaId, selectPersona]);
 
+  /**
+   * Identify an anonymous user by email mid-conversation.
+   * Returns true if the profile was found/updated, false otherwise.
+   */
+  const identifyByEmail = useCallback(async (email: string): Promise<boolean> => {
+    if (!email) return false;
+    isRefreshRef.current = true; // Don't reset conversation on update
+
+    try {
+      if (useMockData) {
+        // Mock: Match email against existing personas
+        const allPersonas = [...(PERSONAS[maisonId] || [])];
+        const match = allPersonas.find(p => p.profile.email?.toLowerCase() === email.toLowerCase());
+        if (match) {
+          setSelectedPersonaId(match.id);
+          setCustomer(match.profile);
+          console.log('[identity] Email matched existing persona:', match.id);
+          return true;
+        }
+        // No match: create minimal profile with email
+        const minimalProfile: CustomerProfile = {
+          id: `email-${Date.now()}`,
+          name: email.split('@')[0],
+          email,
+          luxuryProfile: {} as CustomerProfile['luxuryProfile'],
+          orders: [],
+          purchaseHistory: [],
+          chatSummaries: [],
+          meaningfulEvents: [],
+          browseSessions: [],
+          loyalty: null,
+          savedPaymentMethods: [],
+          shippingAddresses: [],
+          recentActivity: [],
+          merkuryIdentity: {
+            merkuryId: '',
+            identityTier: 'known',
+            confidence: 1.0,
+            resolvedAt: new Date().toISOString(),
+          },
+        };
+        setCustomer(minimalProfile);
+        console.log('[identity] Created new profile from email:', email);
+        return true;
+      } else {
+        // Real: Query Data Cloud by email
+        const dataCloudService = getDataCloudService();
+        const profile = await dataCloudService.getCustomerProfileByEmail(email);
+        if (profile) {
+          setCustomer(profile);
+          console.log('[identity] Found Data Cloud profile by email:', profile.id);
+          return true;
+        }
+        console.log('[identity] No Data Cloud profile found for email:', email);
+        return false;
+      }
+    } catch (err) {
+      console.error('[identity] Email lookup failed:', err);
+      return false;
+    } finally {
+      isRefreshRef.current = false;
+    }
+  }, [maisonId]);
+
+  // Auto-select anonymous persona on mount
+  useEffect(() => {
+    if (!selectedPersonaId) {
+      const anonymousId = maisonId === 'lv' ? 'lv-anonymous' : 'mh-anonymous';
+      selectPersona(anonymousId);
+    }
+  }, []);
+
   return (
     <CustomerContext.Provider value={{
       customer, selectedPersonaId, isLoading, isResolving, error,
-      selectPersona, refreshProfile, resetPersonaSession,
+      selectPersona, refreshProfile, resetPersonaSession, identifyByEmail,
       _isRefreshRef: isRefreshRef, _onSessionReset: onSessionReset,
     }}>
       {children}

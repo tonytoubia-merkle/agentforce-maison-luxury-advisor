@@ -20,10 +20,11 @@ function useMaisonSafe(): { maisonId: MaisonId } {
     return { maisonId: 'lv' };
   }
 }
-import type { AgentResponse } from '@/types/agent';
+import type { AgentResponse, CaptureNotification } from '@/types/agent';
 import { getAgentforceClient } from '@/services/agentforce/client';
 import { getDataCloudWriteService } from '@/services/datacloud';
 import type { SceneSnapshot } from './SceneContext';
+import { useActivityToast } from '@/components/ActivityToast';
 
 const useMockData = import.meta.env.VITE_USE_MOCK_DATA !== 'false';
 
@@ -342,8 +343,9 @@ export const ConversationProvider: React.FC<{ children: React.ReactNode }> = ({ 
   const [isLoadingWelcome, setIsLoadingWelcome] = useState(false);
   const [suggestedActions, setSuggestedActions] = useState<string[]>([]);
   const { processUIDirective, resetScene, getSceneSnapshot, restoreSceneSnapshot } = useScene();
-  const { customer, selectedPersonaId, _isRefreshRef, _onSessionReset } = useCustomer();
+  const { customer, selectedPersonaId, _isRefreshRef, _onSessionReset, identifyByEmail } = useCustomer();
   const { maisonId: activeMaisonId } = useMaisonSafe();
+  const { showToasts } = useActivityToast();
   const messagesRef = useRef<AgentMessage[]>([]);
   const suggestedActionsRef = useRef<string[]>([]);
   const prevCustomerIdRef = useRef<string | null>(null);
@@ -573,7 +575,24 @@ export const ConversationProvider: React.FC<{ children: React.ReactNode }> = ({ 
       // transitions don't show a second typing bubble.
       setIsAgentTyping(false);
 
-      if (response.uiDirective) {
+      // Handle IDENTIFY_CUSTOMER directive
+      if (response.uiDirective?.action === 'IDENTIFY_CUSTOMER') {
+        const email = response.uiDirective.payload?.customerEmail;
+        if (email) {
+          const identified = await identifyByEmail(email);
+          if (identified) {
+            showToasts([{ type: 'contact_created', label: `Identified: ${email}` }]);
+          }
+        }
+      }
+
+      // Show capture notifications as toasts
+      const captures = response.uiDirective?.payload?.captures;
+      if (captures?.length) {
+        showToasts(captures);
+      }
+
+      if (response.uiDirective && response.uiDirective.action !== 'IDENTIFY_CUSTOMER') {
         await processUIDirective(response.uiDirective);
       }
     } catch (error) {

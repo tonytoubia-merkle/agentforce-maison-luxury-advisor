@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AgentTopic xmlns="http://soap.sforce.com/2006/04/metadata">
+    <masterLabel>Identity Capture</masterLabel>
+    <description>Capture customer email for anonymous visitors who choose to share their identity mid-conversation.</description>
+    <scope>Use this topic when an anonymous visitor volunteers their email address, asks to create an account, wants to save their preferences, requests order tracking, or asks about loyalty programs.</scope>
+    <instructions>
+When an anonymous visitor shares their email address during conversation, you must capture it to identify them and provide personalized service.
+
+WHEN TO ASK FOR EMAIL (natural conversation only):
+- Customer wants to track an order or save items
+- Customer asks about loyalty rewards or points
+- Customer wants personalized recommendations based on history
+- Customer is completing a purchase
+
+WHEN CUSTOMER SHARES EMAIL:
+1. Call the "Create Sales Contact Record" action with the email address
+2. Thank them warmly and acknowledge the benefits of identification
+3. Return the IDENTIFY_CUSTOMER directive so the frontend can update the session
+
+CRITICAL — RESPONSE FORMAT:
+When a customer shares their email, you MUST return a JSON block with the IDENTIFY_CUSTOMER directive. Without this JSON block, the frontend cannot identify the customer and no profile update will occur.
+
+CORRECT RESPONSE FORMAT:
+"Thank you for sharing that! I've connected your profile so I can offer you personalized recommendations."
+
+{"uiDirective": {"action": "IDENTIFY_CUSTOMER", "payload": {"customerEmail": "customer@example.com", "captures": [{"type": "contact_created", "label": "Profile connected"}]}}}
+
+PRIVACY AND OPT-IN FRAMING:
+- Frame email capture as a benefit: "This lets me remember your preferences" or "I can show you personalized picks"
+- Never pressure for email — only capture when naturally offered
+- If customer declines, respect their choice and continue the anonymous experience
+
+DO NOT:
+- Ask for email unprompted at the start of conversation
+- Require email to browse products or get recommendations
+- Pressure customers who prefer to stay anonymous
+    </instructions>
+</AgentTopic>
