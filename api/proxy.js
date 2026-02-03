@@ -3,7 +3,9 @@
 
 import https from 'node:https';
 
-const SF_INSTANCE = process.env.VITE_AGENTFORCE_INSTANCE_URL || 'https://me1769724439764.my.salesforce.com';
+// Vercel uses AGENTFORCE_INSTANCE_URL (without VITE_ prefix for server-side)
+// Falls back to VITE_ prefixed version for local dev compatibility
+const SF_INSTANCE = process.env.AGENTFORCE_INSTANCE_URL || process.env.VITE_AGENTFORCE_INSTANCE_URL || 'https://me1769724439764.my.salesforce.com';
 
 const routes = [
   { prefix: '/api/oauth/token',            target: SF_INSTANCE,                                 rewrite: '/services/oauth2/token' },

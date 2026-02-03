@@ -67,7 +67,7 @@ const NOVEL_PATTERNS = [
 
 /**
  * Determine if a background prompt describes a novel scene that warrants
- * dynamic image generation, vs a standard beauty scene that can use static assets.
+ * dynamic image generation, vs a standard standard scene that can use static assets.
  */
 function isNovelPrompt(prompt: string, setting: SceneSetting): boolean {
   // If the setting itself is not one of our known preseeded settings, it's novel
@@ -113,7 +113,7 @@ export function useGenerativeBackground() {
 
       // Whether the agent provided a rich scene description
       const hasPrompt = !!options?.backgroundPrompt;
-      // Whether the prompt describes something truly novel (not a standard beauty scene)
+      // Whether the prompt describes something truly novel (not a standard standard scene)
       const isNovel = hasPrompt && isNovelPrompt(options!.backgroundPrompt!, setting);
 
       if (cacheRef.current[cacheKey]) {

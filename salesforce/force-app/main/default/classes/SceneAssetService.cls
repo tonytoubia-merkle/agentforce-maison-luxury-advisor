@@ -155,7 +155,7 @@ public with sharing class SceneAssetService {
     }
 
     private static String buildGenerationPrompt(SceneSearchRequest req) {
-        String prompt = 'Luxury beauty product scene, ' + req.setting + ' setting';
+        String prompt = 'Luxury maison scene, ' + req.setting + ' setting';
         if (String.isNotBlank(req.mood)) {
             prompt += ', ' + req.mood + ' mood';
         }
@@ -168,7 +168,7 @@ public with sharing class SceneAssetService {
         if (String.isNotBlank(req.mood)) {
             prompt += ' to have a ' + req.mood + ' atmosphere';
         }
-        prompt += ', maintain luxury beauty aesthetic';
+        prompt += ', maintain luxury maison aesthetic';
         return prompt;
     }
 }

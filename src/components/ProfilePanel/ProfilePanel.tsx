@@ -35,13 +35,13 @@ const Field: React.FC<{ label: string; value: string | undefined | null }> = ({ 
 };
 
 function formatProfile(customer: CustomerProfile) {
-  const bp = customer.beautyProfile;
+  const bp = customer.luxuryProfile;
   const sections: React.ReactNode[] = [];
 
-  // Beauty Profile
+  // Client Profile
   sections.push(
-    <Section key="beauty" title="Beauty Profile" source="Contact">
-      <Field label="Skin Type" value={bp.skinType} />
+    <Section key="profile" title="Client Profile" source="Contact">
+      <Field label="Style" value={bp.stylePreference} />
       <Field label="Concerns" value={bp.concerns?.join(', ')} />
       <Field label="Allergies" value={bp.allergies?.join(', ')} />
       <Field label="Preferred Brands" value={bp.preferredBrands?.join(', ')} />

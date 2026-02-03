@@ -28,28 +28,28 @@
         <description>The Salesforce Contact record ID to update</description>
     </variables>
     <variables>
-        <name>skinType</name>
+        <name>stylePreference</name>
         <dataType>String</dataType>
         <isCollection>false</isCollection>
         <isInput>true</isInput>
         <isOutput>false</isOutput>
-        <description>Skin type value: Normal, Dry, Oily, Combination, Sensitive, Acne-Prone, or Mature</description>
+        <description>Style preference value: Classic, Modern, Avant-Garde, Minimalist, or Eclectic</description>
     </variables>
     <variables>
-        <name>skinConcerns</name>
+        <name>preferredMaison</name>
         <dataType>String</dataType>
         <isCollection>false</isCollection>
         <isInput>true</isInput>
         <isOutput>false</isOutput>
-        <description>Semicolon-separated skin concerns (e.g. acne;dryness;redness)</description>
+        <description>Semicolon-separated preferred maisons (e.g. Hennessy;Dom Perignon;Louis Vuitton)</description>
     </variables>
     <variables>
-        <name>beautyPriority</name>
+        <name>collectorInterests</name>
         <dataType>String</dataType>
         <isCollection>false</isCollection>
         <isInput>true</isInput>
         <isOutput>false</isOutput>
-        <description>Primary beauty priority or goal</description>
+        <description>Primary collector interests or luxury goals</description>
     </variables>
     <variables>
         <name>allergies</name>
@@ -73,7 +73,7 @@
         <isCollection>false</isCollection>
         <isInput>true</isInput>
         <isOutput>false</isOutput>
-        <description>Sustainability preference (e.g. vegan, cruelty-free, clean beauty)</description>
+        <description>Sustainability preference (e.g. ethical sourcing, responsible luxury, eco-conscious)</description>
     </variables>
     <variables>
         <name>climateContext</name>
@@ -144,16 +144,16 @@
             <value><elementReference>contactId</elementReference></value>
         </filters>
         <inputAssignments>
-            <field>Skin_Type__c</field>
-            <value><elementReference>skinType</elementReference></value>
+            <field>Style_Preference__c</field>
+            <value><elementReference>stylePreference</elementReference></value>
         </inputAssignments>
         <inputAssignments>
-            <field>Skin_Concerns__c</field>
-            <value><elementReference>skinConcerns</elementReference></value>
+            <field>Preferred_Maison__c</field>
+            <value><elementReference>preferredMaison</elementReference></value>
         </inputAssignments>
         <inputAssignments>
-            <field>Beauty_Priority__c</field>
-            <value><elementReference>beautyPriority</elementReference></value>
+            <field>Collector_Interests__c</field>
+            <value><elementReference>collectorInterests</elementReference></value>
         </inputAssignments>
         <inputAssignments>
             <field>Allergies__c</field>

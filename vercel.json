@@ -3,7 +3,7 @@
   "outputDirectory": "dist",
   "framework": "vite",
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/proxy" }
+    { "source": "/api/:path*", "destination": "/api/proxy?path=:path*" }
   ],
   "functions": {
     "api/proxy.js": {

@@ -11,74 +11,29 @@
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>
-                <fullName>Cleanser</fullName>
+                <fullName>Handbag</fullName>
                 <default>false</default>
-                <label>Cleanser</label>
+                <label>Handbag</label>
             </value>
             <value>
-                <fullName>Toner</fullName>
+                <fullName>Small Leather Goods</fullName>
                 <default>false</default>
-                <label>Toner</label>
+                <label>Small Leather Goods</label>
             </value>
             <value>
-                <fullName>Serum</fullName>
+                <fullName>Travel</fullName>
                 <default>false</default>
-                <label>Serum</label>
+                <label>Travel</label>
             </value>
             <value>
-                <fullName>Moisturizer</fullName>
+                <fullName>Accessory</fullName>
                 <default>false</default>
-                <label>Moisturizer</label>
+                <label>Accessory</label>
             </value>
             <value>
-                <fullName>Sunscreen</fullName>
+                <fullName>Jewelry</fullName>
                 <default>false</default>
-                <label>Sunscreen</label>
-            </value>
-            <value>
-                <fullName>Mask</fullName>
-                <default>false</default>
-                <label>Mask</label>
-            </value>
-            <value>
-                <fullName>Exfoliant</fullName>
-                <default>false</default>
-                <label>Exfoliant</label>
-            </value>
-            <value>
-                <fullName>Eye Care</fullName>
-                <default>false</default>
-                <label>Eye Care</label>
-            </value>
-            <value>
-                <fullName>Lip Care</fullName>
-                <default>false</default>
-                <label>Lip Care</label>
-            </value>
-            <value>
-                <fullName>Tool</fullName>
-                <default>false</default>
-                <label>Tool</label>
-            </value>
-            <value>
-                <fullName>Foundation</fullName>
-                <default>false</default>
-                <label>Foundation</label>
-            </value>
-            <value>
-                <fullName>Lipstick</fullName>
-                <default>false</default>
-                <label>Lipstick</label>
-            </value>
-            <value>
-                <fullName>Mascara</fullName>
-                <default>false</default>
-                <label>Mascara</label>
-            </value>
-            <value>
-                <fullName>Blush</fullName>
-                <default>false</default>
-                <label>Blush</label>
+                <label>Jewelry</label>
             </value>
             <value>
                 <fullName>Fragrance</fullName>
@@ -86,19 +41,29 @@
                 <label>Fragrance</label>
             </value>
             <value>
-                <fullName>Shampoo</fullName>
+                <fullName>Champagne</fullName>
                 <default>false</default>
-                <label>Shampoo</label>
+                <label>Champagne</label>
             </value>
             <value>
-                <fullName>Conditioner</fullName>
+                <fullName>Cognac</fullName>
                 <default>false</default>
-                <label>Conditioner</label>
+                <label>Cognac</label>
             </value>
             <value>
-                <fullName>Spot Treatment</fullName>
+                <fullName>Whisky</fullName>
                 <default>false</default>
-                <label>Spot Treatment</label>
+                <label>Whisky</label>
+            </value>
+            <value>
+                <fullName>Wine</fullName>
+                <default>false</default>
+                <label>Wine</label>
+            </value>
+            <value>
+                <fullName>Gift Set</fullName>
+                <default>false</default>
+                <label>Gift Set</label>
             </value>
         </valueSetDefinition>
     </valueSet>

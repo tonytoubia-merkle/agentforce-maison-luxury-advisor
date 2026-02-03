@@ -40,11 +40,11 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, onClose
         <span className="text-white/70 text-sm">{product.rating ?? 0} ({(product.reviewCount ?? 0).toLocaleString()} reviews)</span>
       </div>
 
-      {product.attributes?.skinType && (
+      {product.attributes?.suitedFor && (
         <div className="mb-4">
-          <p className="text-white/60 text-xs uppercase tracking-wider mb-2">Skin type compatibility</p>
+          <p className="text-white/60 text-xs uppercase tracking-wider mb-2">Suited for</p>
           <div className="flex flex-wrap gap-1.5">
-            {product.attributes?.skinType.map((type) => (
+            {product.attributes?.suitedFor.map((type) => (
               <Badge key={type} className="bg-white/20 text-white text-xs">
                 {type}
               </Badge>

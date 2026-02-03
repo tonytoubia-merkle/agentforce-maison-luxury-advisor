@@ -37,7 +37,7 @@ function inferSettingFromProducts(products: Product[]): SceneSetting {
   if (/sun|spf|outdoor|beach|hiking|uv/i.test(all)) return 'outdoor';
   if (/moisturiz|serum|cleanser|skincare|face|eye.cream|toner|mask|bathroom|sink/i.test(all)) return 'bathroom';
   if (/lifestyle/i.test(all)) return 'lifestyle';
-  return 'bathroom'; // default for beauty products
+  return 'bathroom'; // default for luxury products
 }
 
 export type SceneSnapshot = SceneState;
@@ -168,7 +168,7 @@ export const SceneProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         const sceneCtx: UIDirective['payload']['sceneContext'] = payload.sceneContext || { setting };
         if (!sceneCtx.backgroundPrompt && payload.products?.length) {
           const names = payload.products.slice(0, 3).map(p => p.name).join(', ');
-          sceneCtx.backgroundPrompt = `A luxurious ${setting} setting perfect for showcasing beauty products like ${names}. Elegant, soft lighting, high-end atmosphere.`;
+          sceneCtx.backgroundPrompt = `A luxurious ${setting} setting perfect for showcasing luxury products like ${names}. Elegant, soft lighting, high-end atmosphere.`;
           sceneCtx.setting = setting;
         }
 
@@ -221,7 +221,7 @@ export const SceneProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         const changeCtx: UIDirective['payload']['sceneContext'] = payload.sceneContext || { setting: sceneSetting };
         const agentProvidedPrompt = !!payload.sceneContext?.backgroundPrompt;
         if (!changeCtx.backgroundPrompt) {
-          changeCtx.backgroundPrompt = `A luxurious ${sceneSetting} setting with elegant, soft lighting and a high-end beauty atmosphere.`;
+          changeCtx.backgroundPrompt = `A luxurious ${sceneSetting} setting with elegant, soft lighting and a high-end luxury atmosphere.`;
           changeCtx.setting = sceneSetting;
           changeCtx.generateBackground = true;
         }

@@ -94,7 +94,7 @@ export interface BrowseSession {
 
 // ─── 1P Profile Data (Preference Center) ────────────────────────
 export interface ProfilePreferences {
-  skinType: 'dry' | 'oily' | 'combination' | 'sensitive' | 'normal';
+  stylePreference: 'classic' | 'modern' | 'eclectic' | 'minimalist' | 'avant-garde';
   concerns: string[];
   allergies: string[];
   fragrancePreference?: 'love' | 'sensitive' | 'fragrance-free';
@@ -145,18 +145,20 @@ export interface AgentCapturedProfile {
   exerciseRoutine?: CapturedProfileField;      // "I run every morning", "yoga 3x/week"
   workEnvironment?: CapturedProfileField;      // "office with AC", "outdoors", "WFH"
 
-  // Beauty philosophy
-  beautyPriority?: CapturedProfileField;       // "I care most about ingredients", "I want it fast"
+  // Luxury philosophy
+  luxuryPriority?: CapturedProfileField;       // "I care most about craftsmanship", "I value heritage"
   priceRange?: CapturedProfileField;           // "I don't mind spending more for quality"
   sustainabilityPref?: CapturedProfileField;   // "I only buy cruelty-free"
 
-  // Skin/body context the agent picks up
+  // Lifestyle context the agent picks up
   climateContext?: CapturedProfileField;       // "It's really dry where I live"
   waterIntake?: CapturedProfileField;          // "I know I don't drink enough water"
   sleepPattern?: CapturedProfileField;         // "I'm a night owl"
 }
 
 // ─── Legacy compat alias ────────────────────────────────────────
+export type LuxuryProfile = ProfilePreferences;
+/** @deprecated Use LuxuryProfile instead */
 export type BeautyProfile = ProfilePreferences;
 
 export interface TravelPreferences {
@@ -203,7 +205,7 @@ export interface CustomerProfile {
   email: string;
 
   // 1P Profile (preference center)
-  beautyProfile: ProfilePreferences;
+  luxuryProfile: ProfilePreferences;
 
   // Purchase history (order-level)
   orders: OrderRecord[];
@@ -251,7 +253,7 @@ export interface CustomerSessionContext {
   name: string;
   email?: string;
   identityTier: IdentityTier;
-  skinType?: string;
+  stylePreference?: string;
   concerns?: string[];
   recentPurchases?: string[];
   recentActivity?: string[];

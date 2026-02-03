@@ -6,6 +6,7 @@
     "dev": "concurrently \"node server/index.js\" \"vite\"",
     "dev:server": "node server/index.js",
     "dev:client": "vite",
+    "dev:vercel": "vercel dev",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "lint": "eslint src --ext ts,tsx",

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Collector_Interests__c</fullName>
+    <label>Collector Interests</label>
+    <length>255</length>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <type>Text</type>
+    <unique>false</unique>
+    <description>Collecting interests (e.g. limited editions, vintage cognac, seasonal collections)</description>
+</CustomField>

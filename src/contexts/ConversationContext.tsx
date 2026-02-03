@@ -94,7 +94,7 @@ function buildSessionContext(customer: CustomerProfile): CustomerSessionContext 
       giftsFor: 'Buys gifts for', upcomingOccasions: 'Upcoming occasions',
       morningRoutineTime: 'Morning routine', makeupFrequency: 'Makeup frequency',
       exerciseRoutine: 'Exercise', workEnvironment: 'Work environment',
-      beautyPriority: 'Beauty priority', priceRange: 'Price sensitivity',
+      luxuryPriority: 'Luxury priority', priceRange: 'Price sensitivity',
       sustainabilityPref: 'Sustainability', climateContext: 'Climate',
       waterIntake: 'Hydration habits', sleepPattern: 'Sleep pattern',
     };
@@ -111,7 +111,7 @@ function buildSessionContext(customer: CustomerProfile): CustomerSessionContext 
     // No captured profile at all — everything is missing
     missingProfileFields.push(
       'Birthday', 'Anniversary', 'Morning routine', 'Exercise',
-      'Work environment', 'Beauty priority', 'Price sensitivity',
+      'Work environment', 'Luxury priority', 'Price sensitivity',
     );
   }
 
@@ -119,17 +119,17 @@ function buildSessionContext(customer: CustomerProfile): CustomerSessionContext 
   const taggedContext: TaggedContextField[] = [];
 
   // 1P-EXPLICIT (declared): beauty profile from preference center
-  if (customer.beautyProfile?.skinType) {
-    taggedContext.push({ value: `Skin type: ${customer.beautyProfile.skinType}`, provenance: 'declared', usage: 'direct' });
+  if (customer.luxuryProfile?.stylePreference) {
+    taggedContext.push({ value: `Style preference: ${customer.luxuryProfile.stylePreference}`, provenance: 'declared', usage: 'direct' });
   }
-  if (customer.beautyProfile?.concerns?.length) {
-    taggedContext.push({ value: `Concerns: ${customer.beautyProfile.concerns.join(', ')}`, provenance: 'declared', usage: 'direct' });
+  if (customer.luxuryProfile?.concerns?.length) {
+    taggedContext.push({ value: `Concerns: ${customer.luxuryProfile.concerns.join(', ')}`, provenance: 'declared', usage: 'direct' });
   }
-  if (customer.beautyProfile?.allergies?.length) {
-    taggedContext.push({ value: `Allergies: ${customer.beautyProfile.allergies.join(', ')}`, provenance: 'declared', usage: 'direct' });
+  if (customer.luxuryProfile?.allergies?.length) {
+    taggedContext.push({ value: `Allergies: ${customer.luxuryProfile.allergies.join(', ')}`, provenance: 'declared', usage: 'direct' });
   }
-  if (customer.beautyProfile?.fragrancePreference) {
-    taggedContext.push({ value: `Fragrance preference: ${customer.beautyProfile.fragrancePreference}`, provenance: 'declared', usage: 'direct' });
+  if (customer.luxuryProfile?.fragrancePreference) {
+    taggedContext.push({ value: `Fragrance preference: ${customer.luxuryProfile.fragrancePreference}`, provenance: 'declared', usage: 'direct' });
   }
 
   // 1P-BEHAVIORAL (observed): purchase history
@@ -192,8 +192,8 @@ function buildSessionContext(customer: CustomerProfile): CustomerSessionContext 
     name: customer.name,
     email: customer.email,
     identityTier: customer.merkuryIdentity?.identityTier || 'anonymous',
-    skinType: customer.beautyProfile?.skinType,
-    concerns: customer.beautyProfile?.concerns,
+    stylePreference: customer.luxuryProfile?.stylePreference,
+    concerns: customer.luxuryProfile?.concerns,
     recentPurchases,
     recentActivity,
     appendedInterests: customer.appendedProfile?.interests || [],

@@ -119,42 +119,42 @@ global with sharing class MeaningfulEventService {
             events.add(createEvent('life-event', 'Mentioned a wedding', 'May need special occasion products'));
         }
         if (lower.contains('pregnant') || lower.contains('baby')) {
-            events.add(createEvent('life-event', 'Mentioned pregnancy or new baby', 'May need pregnancy-safe products'));
+            events.add(createEvent('life-event', 'Mentioned pregnancy or new baby', 'May be looking for celebratory gifts'));
         }
         if (lower.contains('moving') || lower.contains('new home') || lower.contains('relocat')) {
-            events.add(createEvent('life-event', 'Mentioned moving or relocation', 'Climate change may affect skin'));
+            events.add(createEvent('life-event', 'Mentioned moving or relocation', 'May need home bar or entertaining essentials'));
         }
 
         // Travel/trips
         if (lower.contains('trip') || lower.contains('vacation') || lower.contains('flying') || lower.contains('travel')) {
-            events.add(createEvent('life-event', 'Has upcoming travel plans', 'May need travel-size products or SPF'));
+            events.add(createEvent('life-event', 'Has upcoming travel plans', 'May need travel-friendly luxury items'));
         }
 
         // Preferences
-        if (lower.contains('fragrance-free') || lower.contains('no fragrance') || lower.contains('unscented')) {
-            events.add(createEvent('preference', 'Prefers fragrance-free products', 'Likely has sensitivity'));
+        if (lower.contains('limited edition') || lower.contains('rare') || lower.contains('exclusive')) {
+            events.add(createEvent('preference', 'Interested in limited edition or rare items', 'Prioritize exclusive offerings'));
         }
-        if (lower.contains('cruelty-free') || lower.contains('vegan') || lower.contains('clean beauty')) {
-            events.add(createEvent('preference', 'Values clean/cruelty-free beauty', 'Filter recommendations accordingly'));
+        if (lower.contains('vintage') || lower.contains('collector') || lower.contains('investment piece')) {
+            events.add(createEvent('preference', 'Values vintage or collector items', 'Filter recommendations for collectible pieces'));
         }
-        if (lower.contains('organic') || lower.contains('natural ingredients')) {
-            events.add(createEvent('preference', 'Prefers organic/natural products', null));
+        if (lower.contains('sustainable') || lower.contains('ethical') || lower.contains('responsible')) {
+            events.add(createEvent('preference', 'Prefers sustainable/ethical luxury', null));
         }
 
         // Concerns
-        if (lower.contains('breakout') || lower.contains('breaking out')) {
-            events.add(createEvent('concern', 'Experiencing breakouts', 'Check current routine for potential irritants'));
+        if (lower.contains('auction') || lower.contains('appraisal')) {
+            events.add(createEvent('concern', 'Interest in auction or appraisal', 'May need authentication or valuation guidance'));
         }
-        if (lower.contains('dry') && (lower.contains('skin') || lower.contains('flak'))) {
-            events.add(createEvent('concern', 'Experiencing dry/flaky skin', 'May need richer moisturizer'));
+        if (lower.contains('storage') || lower.contains('preservation')) {
+            events.add(createEvent('concern', 'Concerned about storage or preservation', 'Recommend proper storage solutions'));
         }
-        if (lower.contains('sensiti') && lower.contains('skin')) {
-            events.add(createEvent('concern', 'Has sensitive skin concerns', 'Avoid harsh ingredients'));
+        if (lower.contains('authenticity') || lower.contains('counterfeit')) {
+            events.add(createEvent('concern', 'Has authenticity concerns', 'Provide provenance and certification details'));
         }
 
         // Intents
-        if (lower.contains('start a routine') || lower.contains('new to skincare') || lower.contains('beginner')) {
-            events.add(createEvent('intent', 'Wants to start a skincare routine', 'Guide with basics first'));
+        if (lower.contains('first luxury purchase') || lower.contains('starting a collection') || lower.contains('new to fine spirits')) {
+            events.add(createEvent('intent', 'Wants to begin a luxury collection', 'Guide with entry-level prestige pieces'));
         }
         if (lower.contains('gift for') || lower.contains('shopping for someone')) {
             events.add(createEvent('intent', 'Shopping for a gift', 'Ask about the recipient'));

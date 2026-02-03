@@ -86,7 +86,7 @@ export class DataCloudCustomerService {
   async getCustomerProfile(customerId: string): Promise<CustomerProfile> {
     // Look up Contact by Merkury_Id__c via SOQL
     const contactData = await this.fetchJson(
-      `/services/data/v60.0/query/?q=SELECT+Id,FirstName,LastName,Email,Merkury_Id__c,Skin_Type__c,Skin_Concerns__c,Allergies__c,Preferred_Brands__c,MailingStreet,MailingCity,MailingState,MailingPostalCode,MailingCountry+FROM+Contact+WHERE+Merkury_Id__c='${customerId}'+LIMIT+1`
+      `/services/data/v60.0/query/?q=SELECT+Id,FirstName,LastName,Email,Merkury_Id__c,Style_Preference__c,Concerns__c,Allergies__c,Preferred_Brands__c,MailingStreet,MailingCity,MailingState,MailingPostalCode,MailingCountry+FROM+Contact+WHERE+Merkury_Id__c='${customerId}'+LIMIT+1`
     );
 
     const records = contactData.records || [];
@@ -114,9 +114,9 @@ export class DataCloudCustomerService {
       id: contactId,
       name: raw.FirstName || 'Guest',
       email: raw.Email || '',
-      beautyProfile: {
-        skinType: (raw.Skin_Type__c || 'normal').toLowerCase(),
-        concerns: parseSemicolon(raw.Skin_Concerns__c),
+      luxuryProfile: {
+        stylePreference: (raw.Style_Preference__c || 'normal').toLowerCase(),
+        concerns: parseSemicolon(raw.Concerns__c),
         allergies: parseSemicolon(raw.Allergies__c),
         preferredBrands: parseSemicolon(raw.Preferred_Brands__c),
         ageRange: '',

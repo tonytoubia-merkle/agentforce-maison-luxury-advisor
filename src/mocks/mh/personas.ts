@@ -7,8 +7,8 @@ const laurentBertrand: CustomerProfile = {
   name: 'Laurent',
   email: 'laurent.bertrand@example.com',
 
-  beautyProfile: {
-    skinType: 'normal',
+  luxuryProfile: {
+    stylePreference: 'classic',
     concerns: ['cognac', 'rare vintages', 'cellar building'],
     allergies: [],
     preferredBrands: ['HENNESSY', 'DOM P\u00c9RIGNON'],
@@ -90,7 +90,7 @@ const laurentBertrand: CustomerProfile = {
   ],
 
   agentCapturedProfile: {
-    beautyPriority: {
+    luxuryPriority: {
       value: 'Serious collector — values provenance, aging, and rare bottlings',
       capturedAt: '2025-06-22',
       capturedFrom: 'chat session 2025-06-22',
@@ -156,8 +156,8 @@ const oliviaPark: CustomerProfile = {
   name: 'Olivia',
   email: 'olivia.park@example.com',
 
-  beautyProfile: {
-    skinType: 'normal',
+  luxuryProfile: {
+    stylePreference: 'classic',
     concerns: ['champagne', 'entertaining', 'food pairing'],
     allergies: [],
     preferredBrands: ['MO\u00cbT & CHANDON', 'VEUVE CLICQUOT', 'RUINART'],
@@ -229,7 +229,7 @@ const oliviaPark: CustomerProfile = {
   ],
 
   agentCapturedProfile: {
-    beautyPriority: {
+    luxuryPriority: {
       value: 'Champagne-focused — loves discovering pairings and sharing with friends',
       capturedAt: '2025-08-15',
       capturedFrom: 'chat session 2025-08-15',
@@ -289,8 +289,8 @@ const marcusJohnson: CustomerProfile = {
   name: 'Marcus',
   email: 'marcus.j@example.com',
 
-  beautyProfile: {
-    skinType: 'normal',
+  luxuryProfile: {
+    stylePreference: 'classic',
     concerns: ['whisky', 'exploration', 'cocktails'],
     allergies: [],
     preferredBrands: ['GLENMORANGIE', 'ARDBEG'],
@@ -329,7 +329,7 @@ const marcusJohnson: CustomerProfile = {
   ],
 
   agentCapturedProfile: {
-    beautyPriority: {
+    luxuryPriority: {
       value: 'Explorer — curious about different styles, enjoys cocktails and neat sipping',
       capturedAt: '2025-09-05',
       capturedFrom: 'chat session 2025-09-05',
@@ -373,8 +373,8 @@ const appendedSpiritsEnthusiast: CustomerProfile = {
   name: 'Guest',
   email: '',
 
-  beautyProfile: {
-    skinType: 'normal',
+  luxuryProfile: {
+    stylePreference: 'classic',
     concerns: [],
     allergies: [],
     preferredBrands: [],
@@ -416,8 +416,8 @@ const anonymousMHVisitor: CustomerProfile = {
   name: 'Guest',
   email: '',
 
-  beautyProfile: {
-    skinType: 'normal',
+  luxuryProfile: {
+    stylePreference: 'classic',
     concerns: [],
     allergies: [],
     preferredBrands: [],

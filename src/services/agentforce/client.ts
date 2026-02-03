@@ -75,7 +75,7 @@ export class AgentforceClient {
         { name: 'sessionId', type: 'Text', value: toStr(customerContext.customerId) }, // placeholder; Agentforce may also use its internal session ID
         { name: 'customerName', type: 'Text', value: toStr(customerContext.name) },
         { name: 'identityTier', type: 'Text', value: toStr(customerContext.identityTier || 'anonymous') },
-        { name: 'skinType', type: 'Text', value: toStr(customerContext.skinType) },
+        { name: 'stylePreference', type: 'Text', value: toStr(customerContext.stylePreference) },
         { name: 'concerns', type: 'Text', value: toStr(customerContext.concerns) },
         { name: 'recentPurchases', type: 'Text', value: toStr(customerContext.recentPurchases) },
         { name: 'recentActivity', type: 'Text', value: toStr(customerContext.recentActivity) },

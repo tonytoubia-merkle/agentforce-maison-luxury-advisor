@@ -15,8 +15,8 @@ const sarahChen: CustomerProfile = {
   name: 'Sarah',
   email: 'sarah.chen@example.com',
 
-  beautyProfile: {
-    skinType: 'sensitive',
+  luxuryProfile: {
+    stylePreference: 'minimalist',
     concerns: ['hydration', 'redness', 'anti-aging'],
     allergies: ['fragrance'],
     fragrancePreference: 'fragrance-free',
@@ -125,7 +125,7 @@ const sarahChen: CustomerProfile = {
       confidence: 'stated',
     },
     // Captured from chat #1 — she explicitly said she avoids fragrance
-    beautyPriority: {
+    luxuryPriority: {
       value: 'Ingredient-conscious, prioritizes gentle/clean formulations',
       capturedAt: '2025-09-08',
       capturedFrom: 'chat session 2025-09-08',
@@ -201,11 +201,11 @@ const jamesRodriguez: CustomerProfile = {
   name: 'James',
   email: 'james.rodriguez@example.com',
 
-  beautyProfile: {
-    skinType: 'oily',
+  luxuryProfile: {
+    stylePreference: 'modern',
     concerns: ['acne', 'oil control', 'pores'],
     allergies: [],
-    preferredBrands: ['DERMAFIX'],
+    preferredBrands: ['MAISON'],
     ageRange: '25-35',
   },
 
@@ -269,7 +269,7 @@ const jamesRodriguez: CustomerProfile = {
       confidence: 'stated',
     },
     // Captured from chat #1 (2025-07-10) — said he's new to skincare
-    beautyPriority: {
+    luxuryPriority: {
       value: 'Wants to keep it simple, new to skincare',
       capturedAt: '2025-07-10',
       capturedFrom: 'chat session 2025-07-10',
@@ -329,8 +329,8 @@ const aishaPatel: CustomerProfile = {
   name: 'Aisha',
   email: '',
 
-  beautyProfile: {
-    skinType: 'combination',
+  luxuryProfile: {
+    stylePreference: 'modern',
     concerns: [],
     allergies: [],
     preferredBrands: [],
@@ -360,7 +360,7 @@ const aishaPatel: CustomerProfile = {
     hasChildren: false,
     homeOwnership: 'rent',
     educationLevel: "bachelor's",
-    interests: ['luxury beauty', 'clean beauty', 'yoga', 'wellness'],
+    interests: ['luxury goods', 'clean beauty', 'yoga', 'wellness'],
     lifestyleSignals: ['wellness-focused', 'urban professional', 'fitness enthusiast'],
     geoRegion: 'New York Metro',
   },
@@ -373,8 +373,8 @@ const anonymousVisitor: CustomerProfile = {
   name: 'Guest',
   email: '',
 
-  beautyProfile: {
-    skinType: 'normal',
+  luxuryProfile: {
+    stylePreference: 'classic',
     concerns: [],
     allergies: [],
     preferredBrands: [],
@@ -405,8 +405,8 @@ const mayaThompson: CustomerProfile = {
   name: 'Maya',
   email: 'maya.thompson@example.com',
 
-  beautyProfile: {
-    skinType: 'normal',
+  luxuryProfile: {
+    stylePreference: 'eclectic',
     concerns: ['brightening', 'glow'],
     allergies: [],
     fragrancePreference: 'love',
@@ -517,7 +517,7 @@ const mayaThompson: CustomerProfile = {
 
   agentCapturedProfile: {
     // From chat #1 — Jardin de Nuit is her signature
-    beautyPriority: {
+    luxuryPriority: {
       value: 'Loves makeup and fragrance, views beauty as self-expression',
       capturedAt: '2025-06-02',
       capturedFrom: 'chat session 2025-06-02',
@@ -586,11 +586,11 @@ const davidKim: CustomerProfile = {
   name: 'David',
   email: 'david.kim@example.com',
 
-  beautyProfile: {
-    skinType: 'combination',
+  luxuryProfile: {
+    stylePreference: 'classic',
     concerns: ['pores', 'texture', 'oil control'],
     allergies: [],
-    preferredBrands: ['DERMAFIX', 'SERENE'],
+    preferredBrands: ['MAISON', 'SERENE'],
     ageRange: '30-40',
   },
 
@@ -639,7 +639,7 @@ const davidKim: CustomerProfile = {
 
   agentCapturedProfile: {
     // From chat #1 — asked detailed ingredient questions
-    beautyPriority: {
+    luxuryPriority: {
       value: 'Science-driven, wants to understand how ingredients interact before buying',
       capturedAt: '2025-08-15',
       capturedFrom: 'chat session 2025-08-15',
@@ -708,8 +708,8 @@ const priyaSharma: CustomerProfile = {
   name: 'Priya',
   email: '',
 
-  beautyProfile: {
-    skinType: 'combination',
+  luxuryProfile: {
+    stylePreference: 'classic',
     concerns: [],
     allergies: [],
     preferredBrands: [],
@@ -739,7 +739,7 @@ const priyaSharma: CustomerProfile = {
     hasChildren: true,
     homeOwnership: 'own',
     educationLevel: "master's",
-    interests: ['luxury beauty', 'anti-aging', 'spa treatments', 'fine dining'],
+    interests: ['luxury goods', 'anti-aging', 'spa treatments', 'fine dining'],
     lifestyleSignals: ['affluent suburban', 'self-care focused', 'frequent spa-goer'],
     geoRegion: 'Dallas-Fort Worth',
   },
@@ -752,8 +752,8 @@ const marcusWilliams: CustomerProfile = {
   name: 'Marcus',
   email: 'marcus.w@example.com',
 
-  beautyProfile: {
-    skinType: 'dry',
+  luxuryProfile: {
+    stylePreference: 'minimalist',
     concerns: ['hydration', 'dullness'],
     allergies: [],
     preferredBrands: [],
@@ -793,7 +793,7 @@ const marcusWilliams: CustomerProfile = {
 
   agentCapturedProfile: {
     // From chat #1 — mentioned a friend recommended the brand
-    beautyPriority: {
+    luxuryPriority: {
       value: 'Total beginner, friend recommended the brand, wants to keep it simple',
       capturedAt: '2026-01-24',
       capturedFrom: 'chat session 2026-01-24',
@@ -828,14 +828,14 @@ export const PERSONAS: PersonaMeta[] = [
     id: 'sarah',
     label: 'Sarah Chen',
     subtitle: 'Known · Loyalty Gold',
-    traits: ['Sensitive skin', 'Recent Mumbai trip', '4 orders', 'Browsing retinol', '2,450 loyalty pts'],
+    traits: ['Minimalist style', 'Recent Mumbai trip', '4 orders', 'Browsing retinol', '2,450 loyalty pts'],
     profile: sarahChen,
   },
   {
     id: 'james',
     label: 'James Rodriguez',
     subtitle: 'Known · No Loyalty',
-    traits: ['Oily skin', 'Anniversary gift search', '1 order', '2 chats', 'Not a loyalty member'],
+    traits: ['Modern style', 'Anniversary gift search', '1 order', '2 chats', 'Not a loyalty member'],
     profile: jamesRodriguez,
   },
   {
@@ -849,14 +849,14 @@ export const PERSONAS: PersonaMeta[] = [
     id: 'david',
     label: 'David Kim',
     subtitle: 'Known · Loyalty Silver',
-    traits: ['Combination skin', 'Routine builder', '2 orders', 'Methodical buyer', 'Browsing retinol'],
+    traits: ['Classic style', 'Routine builder', '2 orders', 'Methodical buyer', 'Browsing retinol'],
     profile: davidKim,
   },
   {
     id: 'marcus',
     label: 'Marcus Williams',
     subtitle: 'Known · Brand New',
-    traits: ['Dry skin', 'Skincare beginner', '1 order last week', 'No loyalty yet'],
+    traits: ['Minimalist style', 'Luxury beginner', '1 order last week', 'No loyalty yet'],
     profile: marcusWilliams,
   },
   {

@@ -1,7 +1,7 @@
 import type { Product } from '@/types/product';
 
 export const MOCK_PRODUCTS: Product[] = [
-  // ─── SERENE (Skincare) ───────────────────────────────────────────
+  // ─── SERENE (Skincare & Wellness) ────────────────────────────────
   {
     id: 'moisturizer-sensitive',
     name: 'Hydra-Calm Sensitive Moisturizer',
@@ -14,7 +14,7 @@ export const MOCK_PRODUCTS: Product[] = [
     imageUrl: '/assets/products/moisturizer-sensitive.png',
     images: ['/assets/products/moisturizer-sensitive.png'],
     attributes: {
-      skinType: ['sensitive', 'dry'],
+      suitedFor: ['sensitive', 'dry'],
       concerns: ['hydration', 'redness', 'barrier repair'],
       ingredients: ['Centella Asiatica', 'Hyaluronic Acid', 'Ceramides'],
       size: '50ml',
@@ -36,7 +36,7 @@ export const MOCK_PRODUCTS: Product[] = [
     imageUrl: '/assets/products/sunscreen-lightweight.png',
     images: ['/assets/products/sunscreen-lightweight.png'],
     attributes: {
-      skinType: ['normal', 'oily', 'combination'],
+      suitedFor: ['normal', 'oily', 'combination'],
       concerns: ['sun protection', 'anti-aging'],
       size: '40ml',
       isTravel: true,
@@ -58,7 +58,7 @@ export const MOCK_PRODUCTS: Product[] = [
     imageUrl: '/assets/products/mist-refreshing.png',
     images: ['/assets/products/mist-refreshing.png'],
     attributes: {
-      skinType: ['normal', 'dry', 'combination', 'sensitive', 'oily'],
+      suitedFor: ['normal', 'dry', 'combination', 'sensitive', 'oily'],
       concerns: ['hydration', 'refreshing'],
       size: '75ml',
       isTravel: true,
@@ -80,7 +80,7 @@ export const MOCK_PRODUCTS: Product[] = [
     imageUrl: '/assets/products/blotting-sheets.png',
     images: ['/assets/products/blotting-sheets.png'],
     attributes: {
-      skinType: ['oily', 'combination'],
+      suitedFor: ['oily', 'combination'],
       concerns: ['oil control'],
       size: '100 sheets',
       isTravel: true,
@@ -102,7 +102,7 @@ export const MOCK_PRODUCTS: Product[] = [
     imageUrl: '/assets/products/cleanser-gentle.png',
     images: ['/assets/products/cleanser-gentle.png'],
     attributes: {
-      skinType: ['sensitive', 'dry', 'normal'],
+      suitedFor: ['sensitive', 'dry', 'normal'],
       concerns: ['cleansing', 'hydration', 'barrier repair'],
       ingredients: ['Glycerin', 'Oat Extract', 'Squalane'],
       size: '150ml',
@@ -124,7 +124,7 @@ export const MOCK_PRODUCTS: Product[] = [
     imageUrl: '/assets/products/mask-hydrating.png',
     images: ['/assets/products/mask-hydrating.png'],
     attributes: {
-      skinType: ['dry', 'normal', 'sensitive'],
+      suitedFor: ['dry', 'normal', 'sensitive'],
       concerns: ['hydration', 'dullness', 'barrier repair'],
       ingredients: ['Hyaluronic Acid', 'Honey Extract', 'Squalane'],
       size: '60ml',
@@ -146,7 +146,7 @@ export const MOCK_PRODUCTS: Product[] = [
     imageUrl: '/assets/products/toner-aha.png',
     images: ['/assets/products/toner-aha.png'],
     attributes: {
-      skinType: ['normal', 'oily', 'combination'],
+      suitedFor: ['normal', 'oily', 'combination'],
       concerns: ['texture', 'pores', 'brightening'],
       ingredients: ['Glycolic Acid 5%', 'Witch Hazel', 'Aloe Vera'],
       size: '200ml',
@@ -168,7 +168,7 @@ export const MOCK_PRODUCTS: Product[] = [
     imageUrl: '/assets/products/eye-cream.png',
     images: ['/assets/products/eye-cream.png'],
     attributes: {
-      skinType: ['normal', 'dry', 'sensitive'],
+      suitedFor: ['normal', 'dry', 'sensitive'],
       concerns: ['dark circles', 'puffiness', 'fine lines'],
       ingredients: ['Caffeine', 'Peptides', 'Vitamin K'],
       size: '15ml',
@@ -192,7 +192,7 @@ export const MOCK_PRODUCTS: Product[] = [
     imageUrl: '/assets/products/serum-vitamin-c.png',
     images: ['/assets/products/serum-vitamin-c.png'],
     attributes: {
-      skinType: ['normal', 'combination', 'dry'],
+      suitedFor: ['normal', 'combination', 'dry'],
       concerns: ['brightening', 'dark spots', 'anti-aging'],
       ingredients: ['L-Ascorbic Acid 15%', 'Ferulic Acid', 'Vitamin E'],
       size: '30ml',
@@ -214,7 +214,7 @@ export const MOCK_PRODUCTS: Product[] = [
     imageUrl: '/assets/products/serum-retinol.png',
     images: ['/assets/products/serum-retinol.png'],
     attributes: {
-      skinType: ['normal', 'combination', 'oily'],
+      suitedFor: ['normal', 'combination', 'oily'],
       concerns: ['anti-aging', 'fine lines', 'texture'],
       ingredients: ['Encapsulated Retinol 0.5%', 'Bakuchiol', 'Niacinamide'],
       size: '30ml',
@@ -236,7 +236,7 @@ export const MOCK_PRODUCTS: Product[] = [
     imageUrl: '/assets/products/serum-anti-aging.png',
     images: ['/assets/products/serum-anti-aging.png'],
     attributes: {
-      skinType: ['normal', 'dry', 'combination'],
+      suitedFor: ['normal', 'dry', 'combination'],
       concerns: ['anti-aging', 'wrinkles', 'firming'],
       ingredients: ['Matrixyl 3000', 'Argireline', 'Copper Peptides'],
       size: '30ml',
@@ -258,7 +258,7 @@ export const MOCK_PRODUCTS: Product[] = [
     imageUrl: '/assets/products/foundation-dewy.png',
     images: ['/assets/products/foundation-dewy.png'],
     attributes: {
-      skinType: ['normal', 'dry', 'combination'],
+      suitedFor: ['normal', 'dry', 'combination'],
       concerns: ['coverage', 'hydration', 'glow'],
       ingredients: ['Hyaluronic Acid', 'Light-Reflecting Pigments', 'Squalane'],
       size: '30ml',
@@ -342,7 +342,7 @@ export const MOCK_PRODUCTS: Product[] = [
     imageUrl: '/assets/products/cleanser-acne.png',
     images: ['/assets/products/cleanser-acne.png'],
     attributes: {
-      skinType: ['oily', 'combination'],
+      suitedFor: ['oily', 'combination'],
       concerns: ['acne', 'oil control', 'pores'],
       ingredients: ['Salicylic Acid 2%', 'Tea Tree Oil', 'Niacinamide'],
       size: '200ml',
@@ -364,7 +364,7 @@ export const MOCK_PRODUCTS: Product[] = [
     imageUrl: '/assets/products/serum-niacinamide.png',
     images: ['/assets/products/serum-niacinamide.png'],
     attributes: {
-      skinType: ['oily', 'combination', 'normal'],
+      suitedFor: ['oily', 'combination', 'normal'],
       concerns: ['pores', 'oil control', 'texture'],
       ingredients: ['Niacinamide 10%', 'Zinc PCA', 'Hyaluronic Acid'],
       size: '30ml',
@@ -386,7 +386,7 @@ export const MOCK_PRODUCTS: Product[] = [
     imageUrl: '/assets/products/spot-treatment.png',
     images: ['/assets/products/spot-treatment.png'],
     attributes: {
-      skinType: ['oily', 'combination', 'normal'],
+      suitedFor: ['oily', 'combination', 'normal'],
       concerns: ['acne', 'blemishes', 'spot treatment'],
       ingredients: ['Hydrocolloid', 'Salicylic Acid', 'Tea Tree Oil'],
       size: '36 patches',
@@ -409,7 +409,7 @@ export const MOCK_PRODUCTS: Product[] = [
     imageUrl: '/assets/products/sunscreen-mineral.png',
     images: ['/assets/products/sunscreen-mineral.png'],
     attributes: {
-      skinType: ['sensitive', 'oily', 'combination'],
+      suitedFor: ['sensitive', 'oily', 'combination'],
       concerns: ['sun protection', 'sensitive skin', 'acne-safe'],
       ingredients: ['Zinc Oxide 15%', 'Iron Oxides', 'Niacinamide'],
       size: '50ml',

@@ -9,7 +9,7 @@
  *   - .env.local must have valid VITE_AGENTFORCE_CLIENT_ID / SECRET / INSTANCE_URL
  *
  * What it creates (for each "known" persona):
- *   1. Account → Contact (with custom beauty profile fields)
+ *   1. Account → Contact (with custom luxury profile fields)
  *   2. Chat_Summary__c records
  *   3. Meaningful_Event__c records
  *   4. Agent_Captured_Profile__c records
@@ -104,8 +104,8 @@ async function sfQuery(token, soql) {
 async function cleanupOrphanedAccounts(token) {
   console.log('\n🧹 Cleaning up orphaned Accounts from previous run...');
   const names = [
-    'Sarah Chen Household', 'James Rodriguez Household', 'Maya Thompson Household',
-    'David Kim Household', 'Marcus Williams Household',
+    'Isabelle Durand Household', 'Alexander Chen Household', 'Sofia Martinez Household',
+    'Laurent Bertrand Household', 'Olivia Park Household', 'Marcus Johnson Household',
   ];
   for (const name of names) {
     const data = await sfQuery(token, `SELECT Id FROM Account WHERE Name = '${name}'`);
@@ -135,163 +135,140 @@ async function buildProductMap(token) {
 }
 
 // ─── Persona Data ───────────────────────────────────────────────
-const personas = [
+
+// La Maison personas
+const lvPersonas = [
   {
-    name: { first: 'Sarah', last: 'Chen' },
-    email: 'sarah.chen@example.com',
-    merkuryId: 'MRK-SC-90210',
-    skinType: 'Sensitive',
-    concerns: 'hydration;redness;anti-aging',
-    allergies: 'fragrance',
-    preferredBrands: 'SERENE;LUMIERE',
-    address: { street: '123 Main St', city: 'San Francisco', state: 'CA', zip: '94102', country: 'US' },
+    name: { first: 'Isabelle', last: 'Durand' },
+    email: 'isabelle.durand@example.com',
+    merkuryId: 'MRK-ID-75001',
+    preferredMaison: 'La Maison',
+    preferredBrands: 'MAISON;HAUTE JOAILLERIE',
+    stylePreference: 'Classic with statement pieces',
+    address: { street: '12 Avenue Montaigne', city: 'Paris', state: '', zip: '75008', country: 'FR' },
     orders: [
-      { id: 'ORD-2025-0847', date: '2025-06-12', channel: 'online', status: 'Activated', total: 94, items: [{ name: 'Cloud Cream Cleanser', qty: 1, price: 36 }, { name: 'Hydra-Calm Sensitive Moisturizer', qty: 1, price: 58 }] },
-      { id: 'ORD-2025-1203', date: '2025-09-08', channel: 'in-store', status: 'Activated', total: 45, items: [{ name: 'Deep Dew Hydrating Mask', qty: 1, price: 45 }] },
-      { id: 'ORD-2025-1456', date: '2025-11-15', channel: 'online', status: 'Activated', total: 94, items: [{ name: 'Cloud Cream Cleanser', qty: 1, price: 36 }, { name: 'Hydra-Calm Sensitive Moisturizer', qty: 1, price: 58 }] },
-      { id: 'ORD-2025-1789', date: '2025-12-20', channel: 'mobile-app', status: 'Activated', total: 70, items: [{ name: 'Invisible Shield SPF 50', qty: 1, price: 42 }, { name: 'Cooling Facial Mist', qty: 1, price: 28 }] },
+      { id: 'ORD-2025-0301', date: '2025-03-14', channel: 'in-store', status: 'Activated', total: 5500, items: [{ name: 'Capucines BB', qty: 1, price: 5500 }] },
+      { id: 'ORD-2025-0612', date: '2025-06-12', channel: 'online', status: 'Activated', total: 1375, items: [{ name: 'Vivienne Pendant Necklace', qty: 1, price: 845 }, { name: 'Nanogram Cuff Bracelet', qty: 1, price: 530 }] },
+      { id: 'ORD-2025-0918', date: '2025-09-18', channel: 'in-store', status: 'Activated', total: 2030, items: [{ name: 'Neverfull MM', qty: 1, price: 2030 }] },
+      { id: 'ORD-2025-1201', date: '2025-12-01', channel: 'online', status: 'Activated', total: 400, items: [{ name: 'Card Holder', qty: 1, price: 400 }] },
     ],
-    loyalty: { tier: 'Gold', points: 2450, lifetime: 4800, since: '2024-11-01', expires: '2026-11-01' },
+    loyalty: { tier: 'Platinum', points: 8200, lifetime: 9275, since: '2024-01-15', expires: '2027-01-15' },
     chatSummaries: [
-      { date: '2025-09-08', summary: 'Asked about overnight hydration for sensitive skin. Recommended Deep Dew Hydrating Mask. Confirmed she avoids all fragranced products.', sentiment: 'positive', topics: 'overnight hydration;sensitive skin;fragrance allergy' },
-      { date: '2025-12-18', summary: 'Asked for travel-friendly skincare for work trip to Mumbai. Recommended SPF 50 and Cooling Mist. Also interested in retinol but worried about sensitivity.', sentiment: 'positive', topics: 'travel skincare;hot climate;SPF;retinol interest' },
+      { date: '2025-06-12', summary: 'VIC customer shopping for jewelry to match her Capucines. Selected Vivienne pendant and Nanogram cuff. Mentioned daughter turning 18 next year.', sentiment: 'positive', topics: 'jewelry;matching set;daughter birthday' },
+      { date: '2025-12-01', summary: 'Quick gifting purchase — card holder for nephew. Asked about monogramming options.', sentiment: 'positive', topics: 'gifting;monogram;small leather goods' },
     ],
     meaningfulEvents: [
-      { type: 'preference', desc: 'Strictly fragrance-free — allergic reaction to fragranced products', at: '2025-09-08', note: 'Never recommend fragranced products' },
-      { type: 'life-event', desc: 'Work trip to Mumbai, India (2 weeks, hot/humid climate)', at: '2025-12-18', note: 'Purchased travel SPF kit before departure', meta: { destination: 'Mumbai, India', climate: 'hot' } },
-      { type: 'concern', desc: 'Interested in retinol but concerned about irritation on sensitive skin', at: '2025-12-18', note: 'Consider recommending encapsulated retinol' },
+      { type: 'life-event', desc: "Daughter Camille turning 18 — wants something unforgettable", at: '2025-06-12', note: 'High jewelry or signature handbag would be ideal', meta: { occasion: 'birthday', giftFor: 'daughter Camille', age: 18 } },
+      { type: 'preference', desc: 'Collects jewelry that matches her handbags — coordination is key', at: '2025-06-12', note: 'Always suggest complementary pieces' },
     ],
     capturedProfile: [
-      { field: 'workEnvironment', value: 'Office, travels frequently for work', at: '2025-12-18', from: 'chat', confidence: 'stated' },
-      { field: 'morningRoutineTime', value: 'Has about 10 minutes in the morning, prefers to do more at night', at: '2025-09-08', from: 'chat', confidence: 'stated' },
-      { field: 'beautyPriority', value: 'Ingredient-conscious, prioritizes gentle/clean formulations', at: '2025-09-08', from: 'chat', confidence: 'inferred' },
+      { field: 'stylePreference', value: 'Classic Parisian elegance with bold statement jewelry', at: '2025-06-12', from: 'chat', confidence: 'inferred' },
+      { field: 'giftsFor', value: 'daughter Camille;nephew', at: '2025-12-01', from: 'chat', confidence: 'stated', dataType: 'array' },
+      { field: 'collectorInterests', value: 'Fine jewelry, coordinates with leather goods', at: '2025-06-12', from: 'purchase pattern', confidence: 'inferred' },
     ],
     browseSessions: [
-      { date: '2026-01-22', categories: 'serum', products: 'serum-retinol;serum-anti-aging', duration: 8, device: 'mobile' },
-      { date: '2026-01-28', categories: 'eye-cream;serum', products: 'eye-cream;serum-vitamin-c', duration: 5, device: 'desktop' },
+      { date: '2026-01-20', categories: 'jewelry;handbag', products: 'lv-vivienne-pendant;lv-capucines-bb', duration: 15, device: 'desktop' },
     ],
   },
   {
-    name: { first: 'James', last: 'Rodriguez' },
-    email: 'james.rodriguez@example.com',
-    merkuryId: 'MRK-JR-78701',
-    skinType: 'Oily',
-    concerns: 'acne;oil control;pores',
-    allergies: '',
-    preferredBrands: 'DERMAFIX',
-    address: { street: '456 Oak Ave', city: 'Austin', state: 'TX', zip: '78701', country: 'US' },
+    name: { first: 'Alexander', last: 'Chen' },
+    email: 'alexander.chen@example.com',
+    merkuryId: 'MRK-AC-10001',
+    preferredMaison: 'La Maison',
+    preferredBrands: 'MAISON',
+    stylePreference: 'Modern minimalist',
+    address: { street: '88 Park Ave', city: 'New York', state: 'NY', zip: '10016', country: 'US' },
     orders: [
-      { id: 'ORD-2025-0612', date: '2025-07-10', channel: 'online', status: 'Activated', total: 32, items: [{ name: 'Clear Start Salicylic Cleanser', qty: 1, price: 32 }] },
+      { id: 'ORD-2025-0515', date: '2025-05-15', channel: 'online', status: 'Activated', total: 2480, items: [{ name: 'Keepall Bandouliere 45', qty: 1, price: 2480 }] },
+      { id: 'ORD-2025-1108', date: '2025-11-08', channel: 'online', status: 'Activated', total: 1010, items: [{ name: 'Zippy Wallet', qty: 1, price: 1010 }] },
     ],
-    loyalty: null,
+    loyalty: { tier: 'Gold', points: 3200, lifetime: 3560, since: '2025-05-15', expires: '2027-05-15' },
     chatSummaries: [
-      { date: '2025-07-10', summary: 'New to skincare, asked for help with oily skin and breakouts. Recommended Clear Start Salicylic Cleanser.', sentiment: 'positive', topics: 'oily skin;acne;beginner routine' },
-      { date: '2026-01-25', summary: 'Looking for fragrance gift for partner — anniversary coming up. Browsed Jardin de Nuit and Bois Sauvage. Also wants to expand skincare routine.', sentiment: 'positive', topics: 'fragrance;gifting;anniversary;skincare routine expansion' },
+      { date: '2025-05-15', summary: 'Business traveler looking for quality travel bag. Chose Keepall 45 — prefers soft bags. Travels NYC-London-HK monthly.', sentiment: 'positive', topics: 'travel;business;keepall;frequent flyer' },
+      { date: '2025-11-08', summary: 'Anniversary gift for wife — chose Zippy Wallet. Asked about matching bag options for future.', sentiment: 'positive', topics: 'anniversary;gifting;wallet;matching bag' },
     ],
     meaningfulEvents: [
-      { type: 'intent', desc: 'Wants to build a proper skincare routine beyond just a cleanser', at: '2025-07-10', note: 'Good candidate for serum + moisturizer step-up' },
-      { type: 'intent', desc: 'Anniversary coming up — looking for fragrance gift for partner', at: '2026-01-25', note: 'Drawn to floral scents for gifting', meta: { occasion: 'anniversary', giftFor: 'partner' } },
+      { type: 'life-event', desc: 'Anniversary gift — wants to build matching set for wife over time', at: '2025-11-08', note: 'Suggest Neverfull or Speedy to match Zippy Wallet', meta: { occasion: 'anniversary', giftFor: 'wife' } },
+      { type: 'preference', desc: 'Frequent business traveler: NYC-London-Hong Kong circuit', at: '2025-05-15', note: 'Prioritize travel pieces and cabin-friendly sizes' },
     ],
     capturedProfile: [
-      { field: 'anniversary', value: 'Coming up in February', at: '2026-01-25', from: 'chat', confidence: 'stated' },
-      { field: 'giftsFor', value: 'partner', at: '2026-01-25', from: 'chat', confidence: 'stated', dataType: 'array' },
-      { field: 'beautyPriority', value: 'Wants to keep it simple, new to skincare', at: '2025-07-10', from: 'chat', confidence: 'stated' },
+      { field: 'travelFrequency', value: 'Monthly — NYC, London, Hong Kong', at: '2025-05-15', from: 'chat', confidence: 'stated' },
+      { field: 'anniversary', value: 'November', at: '2025-11-08', from: 'chat', confidence: 'stated' },
+      { field: 'giftsFor', value: 'wife', at: '2025-11-08', from: 'chat', confidence: 'stated', dataType: 'array' },
     ],
     browseSessions: [
-      { date: '2026-01-25', categories: 'fragrance', products: 'fragrance-floral;fragrance-woody', duration: 12, device: 'mobile' },
-      { date: '2026-01-20', categories: 'serum', products: 'serum-niacinamide', duration: 4, device: 'desktop' },
+      { date: '2026-01-25', categories: 'handbag;travel', products: 'lv-neverfull-mm;lv-horizon-55', duration: 8, device: 'mobile' },
     ],
-  },
-  {
-    name: { first: 'Maya', last: 'Thompson' },
-    email: 'maya.thompson@example.com',
-    merkuryId: 'MRK-MT-30302',
-    skinType: 'Normal',
-    concerns: 'brightening;glow',
-    allergies: '',
-    preferredBrands: 'LUMIERE;MAISON',
-    address: { street: '789 Elm St', city: 'Los Angeles', state: 'CA', zip: '90028', country: 'US' },
-    orders: [
-      { id: 'ORD-2025-0301', date: '2025-03-14', channel: 'online', status: 'Activated', total: 118, items: [{ name: 'Skin Glow Serum Foundation', qty: 1, price: 52 }, { name: 'Silk Petal Blush', qty: 1, price: 38 }, { name: 'Lash Drama Volume Mascara', qty: 1, price: 28 }] },
-      { id: 'ORD-2025-0589', date: '2025-06-02', channel: 'in-store', status: 'Activated', total: 159, items: [{ name: 'Velvet Matte Lip Color', qty: 1, price: 34 }, { name: 'Jardin de Nuit Eau de Parfum', qty: 1, price: 125 }] },
-      { id: 'ORD-2025-0940', date: '2025-09-18', channel: 'online', status: 'Activated', total: 124, items: [{ name: 'Glow Boost Vitamin C Serum', qty: 1, price: 72 }, { name: 'Skin Glow Serum Foundation', qty: 1, price: 52 }] },
-      { id: 'ORD-2025-1501', date: '2025-12-01', channel: 'online', status: 'Draft', total: 95, items: [{ name: 'Peptide Lift Pro Serum', qty: 1, price: 95 }] },
-      { id: 'ORD-2026-0088', date: '2026-01-10', channel: 'mobile-app', status: 'Activated', total: 66, items: [{ name: 'Bond Repair Shampoo', qty: 1, price: 32 }, { name: 'Silk Hydration Conditioner', qty: 1, price: 34 }] },
-    ],
-    loyalty: { tier: 'Platinum', points: 5200, lifetime: 12400, since: '2024-03-01', expires: '2027-03-01' },
-    chatSummaries: [
-      { date: '2025-06-02', summary: 'In-store, found signature fragrance Jardin de Nuit. Said jasmine-sandalwood blend felt "like her." Also picked up lip color.', sentiment: 'positive', topics: 'fragrance;in-store experience;lipstick' },
-      { date: '2025-12-05', summary: 'Returning Peptide Lift Pro — felt too heavy, wants lighter anti-aging alternative.', sentiment: 'neutral', topics: 'product return;anti-aging;serum texture' },
-      { date: '2026-01-10', summary: 'Asked about haircare for color-treated hair. Recently got highlights, worried about damage. Purchased Bond Repair duo.', sentiment: 'positive', topics: 'haircare;color-treated hair;damage repair' },
-    ],
-    meaningfulEvents: [
-      { type: 'preference', desc: 'Jardin de Nuit is her signature fragrance', at: '2025-06-02', note: 'Use for personalized scent recommendations' },
-      { type: 'concern', desc: 'Returned Peptide Lift Pro — too heavy, wants lighter anti-aging', at: '2025-12-05', note: 'Avoid heavy serums. Try Vitamin C or encapsulated retinol.' },
-      { type: 'life-event', desc: 'Recently got hair highlights, concerned about color damage', at: '2026-01-10', note: 'Recommend bond-repair and color-safe formulas' },
-    ],
-    capturedProfile: [
-      { field: 'beautyPriority', value: 'Loves makeup and fragrance, views beauty as self-expression', at: '2025-06-02', from: 'chat', confidence: 'inferred' },
-      { field: 'priceRange', value: 'Willing to spend on premium but expects results', at: '2025-12-05', from: 'chat', confidence: 'inferred' },
-      { field: 'makeupFrequency', value: 'Daily — foundation, blush, mascara are staples', at: '2025-06-02', from: 'purchase pattern', confidence: 'inferred' },
-    ],
-    browseSessions: [
-      { date: '2026-01-20', categories: 'foundation;blush', products: 'foundation-dewy;blush-silk', duration: 6, device: 'mobile' },
-    ],
-  },
-  {
-    name: { first: 'David', last: 'Kim' },
-    email: 'david.kim@example.com',
-    merkuryId: 'MRK-DK-60614',
-    skinType: 'Combination',
-    concerns: 'pores;texture;oil control',
-    allergies: '',
-    preferredBrands: 'DERMAFIX;SERENE',
-    address: { street: '321 Lake Shore Dr', city: 'Chicago', state: 'IL', zip: '60614', country: 'US' },
-    orders: [
-      { id: 'ORD-2025-0720', date: '2025-08-15', channel: 'online', status: 'Activated', total: 70, items: [{ name: 'Clear Start Salicylic Cleanser', qty: 1, price: 32 }, { name: 'Pore Refine Niacinamide Serum', qty: 1, price: 38 }] },
-      { id: 'ORD-2025-1320', date: '2025-11-22', channel: 'online', status: 'Activated', total: 76, items: [{ name: 'Glow Tonic AHA Toner', qty: 1, price: 34 }, { name: 'Invisible Shield SPF 50', qty: 1, price: 42 }] },
-    ],
-    loyalty: { tier: 'Silver', points: 980, lifetime: 1460, since: '2025-08-15', expires: '2026-08-15' },
-    chatSummaries: [
-      { date: '2025-08-15', summary: 'Asked for help building a routine for combination skin. Wanted to address pores and oiliness. Very methodical — asked about ingredient interactions.', sentiment: 'positive', topics: 'combination skin;pores;routine building;ingredient interactions' },
-    ],
-    meaningfulEvents: [
-      { type: 'preference', desc: 'Very methodical about skincare — wants to understand ingredient interactions', at: '2025-08-15', note: 'Provide detailed ingredient explanations' },
-    ],
-    capturedProfile: [
-      { field: 'beautyPriority', value: 'Science-driven, wants to understand how ingredients interact', at: '2025-08-15', from: 'chat', confidence: 'stated' },
-      { field: 'morningRoutineTime', value: 'Has time for a full routine — not rushed', at: '2025-08-15', from: 'chat', confidence: 'inferred' },
-    ],
-    browseSessions: [
-      { date: '2026-01-15', categories: 'serum;moisturizer', products: 'serum-retinol;moisturizer-sensitive', duration: 11, device: 'desktop' },
-      { date: '2026-01-27', categories: 'eye-cream', products: 'eye-cream', duration: 3, device: 'mobile' },
-    ],
-  },
-  {
-    name: { first: 'Marcus', last: 'Williams' },
-    email: 'marcus.w@example.com',
-    merkuryId: 'MRK-MW-11201',
-    skinType: 'Dry',
-    concerns: 'hydration;dullness',
-    allergies: '',
-    preferredBrands: '',
-    address: { street: '55 W 46th St', city: 'New York', state: 'NY', zip: '10036', country: 'US' },
-    orders: [
-      { id: 'ORD-2026-0102', date: '2026-01-24', channel: 'online', status: 'Activated', total: 36, items: [{ name: 'Cloud Cream Cleanser', qty: 1, price: 36 }] },
-    ],
-    loyalty: null,
-    chatSummaries: [
-      { date: '2026-01-24', summary: 'Brand new to skincare. A friend recommended this brand. Has dry, dull skin. Purchased Cloud Cream Cleanser as first step. Asked what to add next.', sentiment: 'positive', topics: 'beginner skincare;dry skin;first purchase;next steps' },
-    ],
-    meaningfulEvents: [
-      { type: 'intent', desc: 'Complete skincare beginner — wants to know what to add next', at: '2026-01-24', note: 'Recommend moisturizer then SPF. Keep it simple.' },
-    ],
-    capturedProfile: [
-      { field: 'beautyPriority', value: 'Total beginner, friend recommended the brand', at: '2026-01-24', from: 'chat', confidence: 'stated' },
-    ],
-    browseSessions: [],
   },
 ];
+
+// Maison des Esprits personas
+const mhPersonas = [
+  {
+    name: { first: 'Laurent', last: 'Bertrand' },
+    email: 'laurent.bertrand@example.com',
+    merkuryId: 'MRK-LB-69001',
+    preferredMaison: 'Maison des Esprits',
+    preferredBrands: 'HENNESSY;DOM PÉRIGNON',
+    tastingPreferences: 'Bold cognac, vintage champagne',
+    address: { street: '45 Quai de la Tournelle', city: 'Lyon', state: '', zip: '69002', country: 'FR' },
+    orders: [
+      { id: 'ORD-2025-0220', date: '2025-02-20', channel: 'online', status: 'Activated', total: 229, items: [{ name: 'Hennessy X.O', qty: 1, price: 229 }] },
+      { id: 'ORD-2025-0601', date: '2025-06-01', channel: 'in-store', status: 'Activated', total: 289, items: [{ name: 'Dom Pérignon Vintage 2015', qty: 1, price: 289 }] },
+      { id: 'ORD-2025-0915', date: '2025-09-15', channel: 'online', status: 'Activated', total: 778, items: [{ name: 'Dom Pérignon Rosé Vintage 2012', qty: 1, price: 549 }, { name: 'Hennessy X.O', qty: 1, price: 229 }] },
+      { id: 'ORD-2025-1210', date: '2025-12-10', channel: 'online', status: 'Activated', total: 1100, items: [{ name: 'Hennessy Paradis', qty: 1, price: 1100 }] },
+    ],
+    loyalty: { tier: 'Platinum', points: 6500, lifetime: 2396, since: '2024-06-01', expires: '2027-06-01' },
+    chatSummaries: [
+      { date: '2025-06-01', summary: 'Cognac collector visiting boutique. Purchased Dom Pérignon Vintage for his cellar. Discussed 60th birthday tasting event plans.', sentiment: 'positive', topics: 'cognac;champagne;collector;birthday tasting' },
+      { date: '2025-12-10', summary: 'Purchased Hennessy Paradis for collection. Planning milestone 60th birthday tasting for friends.', sentiment: 'positive', topics: 'rare spirits;Paradis;collector;60th birthday' },
+    ],
+    meaningfulEvents: [
+      { type: 'life-event', desc: '60th birthday approaching — planning intimate tasting event for close friends', at: '2025-12-10', note: 'Curate a multi-house tasting experience', meta: { occasion: '60th birthday', type: 'tasting event', guests: 'close friends' } },
+      { type: 'preference', desc: 'Serious cognac collector — has Hennessy V.S through Paradis in cellar', at: '2025-06-01', note: 'Suggest rare releases and limited editions' },
+    ],
+    capturedProfile: [
+      { field: 'entertainingStyle', value: 'Intimate tasting events for close friends, 8-12 guests', at: '2025-12-10', from: 'chat', confidence: 'stated' },
+      { field: 'collectorInterests', value: 'Cognac (full Hennessy range), vintage champagne', at: '2025-12-10', from: 'purchase pattern', confidence: 'inferred' },
+      { field: 'birthday', value: 'Approaching 60th', at: '2025-12-10', from: 'chat', confidence: 'stated' },
+    ],
+    browseSessions: [
+      { date: '2026-01-28', categories: 'cognac;gift-set', products: 'mh-hennessy-paradis;mh-hennessy-xo-gift', duration: 12, device: 'desktop' },
+    ],
+  },
+  {
+    name: { first: 'Olivia', last: 'Park' },
+    email: 'olivia.park@example.com',
+    merkuryId: 'MRK-OP-90210',
+    preferredMaison: 'Maison des Esprits',
+    preferredBrands: 'DOM PÉRIGNON;VEUVE CLICQUOT;RUINART',
+    tastingPreferences: 'Champagne, light rosé',
+    address: { street: '2200 Wilshire Blvd', city: 'Los Angeles', state: 'CA', zip: '90210', country: 'US' },
+    orders: [
+      { id: 'ORD-2025-0410', date: '2025-04-10', channel: 'online', status: 'Activated', total: 62, items: [{ name: 'Veuve Clicquot Yellow Label Brut', qty: 1, price: 62 }] },
+      { id: 'ORD-2025-0720', date: '2025-07-20', channel: 'online', status: 'Activated', total: 89, items: [{ name: 'Ruinart Blanc de Blancs', qty: 1, price: 89 }] },
+      { id: 'ORD-2025-1105', date: '2025-11-05', channel: 'in-store', status: 'Activated', total: 261, items: [{ name: 'Champagne Discovery Collection', qty: 1, price: 199 }, { name: 'Veuve Clicquot Yellow Label Brut', qty: 1, price: 62 }] },
+    ],
+    loyalty: { tier: 'Gold', points: 1800, lifetime: 412, since: '2025-04-10', expires: '2027-04-10' },
+    chatSummaries: [
+      { date: '2025-07-20', summary: 'Champagne enthusiast hosting summer garden party. Recommended Ruinart for elegance. Interested in food pairing guidance.', sentiment: 'positive', topics: 'champagne;entertaining;garden party;pairing' },
+      { date: '2025-11-05', summary: 'Bought Discovery Collection as holiday gift for parents. Restocked Veuve for Thanksgiving. Hosts frequently.', sentiment: 'positive', topics: 'gifting;holiday;entertaining;champagne' },
+    ],
+    meaningfulEvents: [
+      { type: 'preference', desc: 'Hosts dinner and garden parties frequently — champagne is central', at: '2025-07-20', note: 'Suggest entertaining quantities and pairing guidance' },
+      { type: 'intent', desc: 'Parents enjoy champagne — gifting channel for discovery sets', at: '2025-11-05', note: 'Gift sets and collections for parents around holidays', meta: { giftFor: 'parents' } },
+    ],
+    capturedProfile: [
+      { field: 'entertainingStyle', value: 'Frequent dinner parties and garden parties, 10-20 guests', at: '2025-07-20', from: 'chat', confidence: 'stated' },
+      { field: 'giftsFor', value: 'parents', at: '2025-11-05', from: 'chat', confidence: 'stated', dataType: 'array' },
+    ],
+    browseSessions: [
+      { date: '2026-01-22', categories: 'champagne;wine', products: 'mh-dom-perignon-vintage;mh-whispering-angel', duration: 10, device: 'mobile' },
+    ],
+  },
+];
+
+const personas = [...lvPersonas, ...mhPersonas];
 
 // ─── Seed Logic ─────────────────────────────────────────────────
 async function seedPersona(token, persona, productMap) {
@@ -305,7 +282,7 @@ async function seedPersona(token, persona, productMap) {
   });
   if (!accountId) return;
 
-  // 2. Create Contact (standard fields only — custom fields can be populated manually in Setup)
+  // 2. Create Contact with custom luxury profile fields
   const contactFields = {
     FirstName: persona.name.first,
     LastName: persona.name.last,
@@ -316,6 +293,10 @@ async function seedPersona(token, persona, productMap) {
     MailingState: persona.address.state,
     MailingPostalCode: persona.address.zip,
     MailingCountry: persona.address.country,
+    ...(persona.preferredMaison && { Preferred_Maison__c: persona.preferredMaison }),
+    ...(persona.preferredBrands && { Preferred_Brands__c: persona.preferredBrands }),
+    ...(persona.stylePreference && { Style_Preference__c: persona.stylePreference }),
+    ...(persona.tastingPreferences && { Tasting_Preferences__c: persona.tastingPreferences }),
   };
 
   const contactId = await sfCreate(token, 'Contact', contactFields);
@@ -323,22 +304,18 @@ async function seedPersona(token, persona, productMap) {
 
   // 3. Create Orders (with OrderItems)
   for (const order of persona.orders) {
-    // Standard Price Book
     const pbData = await sfQuery(token, "SELECT Id FROM Pricebook2 WHERE IsStandard = true LIMIT 1");
     const pricebookId = pbData.records?.[0]?.Id;
 
-    // Create Order as Draft first (Salesforce requires this)
     const orderId = await sfCreate(token, 'Order', {
       AccountId: accountId,
       EffectiveDate: order.date,
       Status: 'Draft',
       Pricebook2Id: pricebookId,
-      Channel__c: order.channel,
       OrderReferenceNumber: order.id,
     });
     if (!orderId) continue;
 
-    // Create OrderItems
     for (const item of order.items) {
       const product2Id = productMap[item.name];
       if (!product2Id) {
@@ -346,11 +323,9 @@ async function seedPersona(token, persona, productMap) {
         continue;
       }
 
-      // Check for PricebookEntry
       const pbeData = await sfQuery(token, `SELECT Id FROM PricebookEntry WHERE Product2Id = '${product2Id}' AND Pricebook2Id = '${pricebookId}' LIMIT 1`);
       let pbeId = pbeData.records?.[0]?.Id;
 
-      // Create PricebookEntry if it doesn't exist
       if (!pbeId) {
         pbeId = await sfCreate(token, 'PricebookEntry', {
           Pricebook2Id: pricebookId,
@@ -370,12 +345,9 @@ async function seedPersona(token, persona, productMap) {
       });
     }
 
-    // Activate the Order if the desired status is Activated
     if (order.status === 'Activated') {
       const activated = await sfUpdate(token, 'Order', orderId, { Status: 'Activated' });
-      if (activated) {
-        console.log(`    ✓ Order ${order.id} activated`);
-      }
+      if (activated) console.log(`    ✓ Order ${order.id} activated`);
     }
   }
 
@@ -437,7 +409,6 @@ async function main() {
   const token = await getAccessToken();
   console.log('  ✓ Token acquired');
 
-  // Clean up orphaned Accounts from previous failed runs
   await cleanupOrphanedAccounts(token);
 
   console.log('\n📦 Loading Product2 catalog...');
@@ -457,9 +428,7 @@ async function main() {
   for (const [merkuryId, contactId] of Object.entries(contactMap)) {
     console.log(`  ${merkuryId} → ${contactId}`);
   }
-  console.log('\nUpdate your customerProfile.ts to query by Contact fields (Email or Merkury_Id__c)');
-  console.log('instead of the SSOT /ssot/customers/ endpoint.\n');
-  console.log('If the CRM Connector is set up, these records will sync to Data Cloud automatically.');
+  console.log('\nIf the CRM Connector is set up, these records will sync to Data Cloud automatically.');
 }
 
 main().catch((err) => {

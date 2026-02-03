@@ -4,17 +4,16 @@
  *
  * These are fields that would be intrusive to ask via a form but are natural
  * to capture during conversation: birthday, anniversary, partner name,
- * morning routine, exercise habits, work environment, beauty priorities, etc.
+ * style preferences, tasting preferences, entertaining style, collector interests, preferred maison, etc.
  */
 global with sharing class ProfileEnrichmentService {
 
     // Allowed field names that can be captured
     private static final Set<String> ALLOWED_FIELDS = new Set<String>{
         'birthday', 'anniversary', 'partnerName', 'giftsFor',
-        'upcomingOccasions', 'morningRoutineTime', 'makeupFrequency',
-        'exerciseRoutine', 'workEnvironment', 'beautyPriority',
-        'priceRange', 'sustainabilityPref', 'climateContext',
-        'waterIntake', 'sleepPattern'
+        'upcomingOccasions', 'stylePreference', 'tastingPreferences',
+        'entertainingStyle', 'collectorInterests', 'preferredMaison',
+        'priceRange', 'sustainabilityPref', 'climateContext'
     };
 
     public class ProfileFieldRequest {

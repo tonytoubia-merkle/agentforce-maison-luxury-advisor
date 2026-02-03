@@ -18,7 +18,7 @@ export type ProductCategory =
   | 'spot-treatment';
 
 export interface ProductAttributes {
-  skinType?: ('dry' | 'oily' | 'combination' | 'sensitive' | 'normal')[];
+  suitedFor?: ('dry' | 'oily' | 'combination' | 'sensitive' | 'normal' | 'classic' | 'modern' | 'eclectic' | 'minimalist' | 'all')[];
   concerns?: string[];
   ingredients?: string[];
   size?: string;

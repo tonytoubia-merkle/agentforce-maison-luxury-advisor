@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Entertaining_Style__c</fullName>
+    <label>Entertaining Style</label>
+    <length>255</length>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <type>Text</type>
+    <unique>false</unique>
+    <description>How the customer entertains (e.g. dinner parties, intimate gatherings, corporate events)</description>
+</CustomField>

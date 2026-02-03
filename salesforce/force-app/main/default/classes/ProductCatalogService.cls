@@ -13,10 +13,10 @@ global with sharing class ProductCatalogService {
         public String category;
 
         @InvocableVariable(required=false)
-        public String skinType;
+        public String maison;
 
         @InvocableVariable(required=false)
-        public String concerns;
+        public String subBrand;
 
         @InvocableVariable(required=false)
         public Integer maxResults;
@@ -45,10 +45,10 @@ global with sharing class ProductCatalogService {
         public String imageUrl;
 
         @InvocableVariable
-        public String skinTypes;
+        public String maison;
 
         @InvocableVariable
-        public String concerns;
+        public String subBrand;
 
         @InvocableVariable
         public Decimal rating;
@@ -74,7 +74,7 @@ global with sharing class ProductCatalogService {
 
     private static List<ProductResult> executeSearch(ProductSearchRequest request) {
         String soql = 'SELECT Id, Name, Brand__c, Category__c, Price__c, Description__c, ' +
-                       'Image_URL__c, Skin_Types__c, Concerns__c, Rating__c, Is_Travel__c, In_Stock__c ' +
+                       'Image_URL__c, Maison__c, Sub_Brand__c, Rating__c, Is_Travel__c, In_Stock__c ' +
                        'FROM Product2 WHERE IsActive = true AND Category__c != null';
 
         List<String> conditions = new List<String>();
@@ -82,8 +82,8 @@ global with sharing class ProductCatalogService {
         if (String.isNotBlank(request.category)) {
             conditions.add('Category__c = :category');
         }
-        if (String.isNotBlank(request.skinType)) {
-            conditions.add('Skin_Types__c INCLUDES (:skinType)');
+        if (String.isNotBlank(request.maison)) {
+            conditions.add('Maison__c = :maison');
         }
         if (String.isNotBlank(request.query)) {
             conditions.add('(Name LIKE :searchQuery)');
@@ -97,7 +97,7 @@ global with sharing class ProductCatalogService {
         soql += ' ORDER BY Rating__c DESC LIMIT ' + maxResults;
 
         String category = request.category;
-        String skinType = request.skinType;
+        String maison = request.maison;
         String searchQuery = request.query != null ? '%' + request.query + '%' : '';
 
         List<Product2> products = Database.query(soql);
@@ -112,8 +112,8 @@ global with sharing class ProductCatalogService {
             result.price = (Decimal) product.get('Price__c');
             result.description = (String) product.get('Description__c');
             result.imageUrl = (String) product.get('Image_URL__c');
-            result.skinTypes = (String) product.get('Skin_Types__c');
-            result.concerns = (String) product.get('Concerns__c');
+            result.maison = (String) product.get('Maison__c');
+            result.subBrand = (String) product.get('Sub_Brand__c');
             result.rating = (Decimal) product.get('Rating__c');
             result.isTravel = (Boolean) product.get('Is_Travel__c');
             result.inStock = (Boolean) product.get('In_Stock__c');

@@ -7,8 +7,8 @@ const isabelleDurand: CustomerProfile = {
   name: 'Isabelle',
   email: 'isabelle.durand@example.com',
 
-  beautyProfile: {
-    skinType: 'normal',
+  luxuryProfile: {
+    stylePreference: 'classic',
     concerns: ['leather goods', 'haute joaillerie', 'limited editions'],
     allergies: [],
     preferredBrands: ['HAUTE MAROQUINERIE', 'HAUTE JOAILLERIE'],
@@ -96,7 +96,7 @@ const isabelleDurand: CustomerProfile = {
   ],
 
   agentCapturedProfile: {
-    beautyPriority: {
+    luxuryPriority: {
       value: 'Investment collector — values craftsmanship, exclusivity, and heritage pieces',
       capturedAt: '2025-04-10',
       capturedFrom: 'chat session 2025-04-10',
@@ -162,8 +162,8 @@ const alexanderChen: CustomerProfile = {
   name: 'Alexander',
   email: 'alexander.chen@example.com',
 
-  beautyProfile: {
-    skinType: 'normal',
+  luxuryProfile: {
+    stylePreference: 'classic',
     concerns: ['travel pieces', 'menswear', 'business accessories'],
     allergies: [],
     preferredBrands: ['MAISON'],
@@ -292,8 +292,8 @@ const sofiaMartinez: CustomerProfile = {
   name: 'Sofia',
   email: 'sofia.martinez@example.com',
 
-  beautyProfile: {
-    skinType: 'normal',
+  luxuryProfile: {
+    stylePreference: 'classic',
     concerns: ['entry-level luxury', 'small leather goods', 'accessories'],
     allergies: [],
     preferredBrands: ['MAISON'],
@@ -332,7 +332,7 @@ const sofiaMartinez: CustomerProfile = {
   ],
 
   agentCapturedProfile: {
-    beautyPriority: {
+    luxuryPriority: {
       value: 'Aspirational first-time luxury buyer — values quality and timeless design',
       capturedAt: '2026-01-10',
       capturedFrom: 'chat session 2026-01-10',
@@ -390,8 +390,8 @@ const appendedLuxuryShopper: CustomerProfile = {
   name: 'Guest',
   email: '',
 
-  beautyProfile: {
-    skinType: 'normal',
+  luxuryProfile: {
+    stylePreference: 'classic',
     concerns: [],
     allergies: [],
     preferredBrands: [],
@@ -433,8 +433,8 @@ const anonymousLVVisitor: CustomerProfile = {
   name: 'Guest',
   email: '',
 
-  beautyProfile: {
-    skinType: 'normal',
+  luxuryProfile: {
+    stylePreference: 'classic',
     concerns: [],
     allergies: [],
     preferredBrands: [],

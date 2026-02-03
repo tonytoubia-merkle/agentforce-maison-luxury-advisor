@@ -89,7 +89,7 @@ global with sharing class ChatSummaryService {
         // Look for product mentions
         if (transcript.containsIgnoreCase('moisturizer') || transcript.containsIgnoreCase('serum') ||
             transcript.containsIgnoreCase('cleanser') || transcript.containsIgnoreCase('sunscreen')) {
-            summaryParts.add('Discussed skincare products.');
+            summaryParts.add('Discussed luxury products.');
         }
         if (transcript.containsIgnoreCase('travel')) {
             summaryParts.add('Discussed travel-related products.');
@@ -103,7 +103,7 @@ global with sharing class ChatSummaryService {
             summaryParts.add('Showed purchase intent.');
         }
         if (transcript.containsIgnoreCase('routine')) {
-            summaryParts.add('Discussed skincare routine.');
+            summaryParts.add('Discussed product collection.');
         }
 
         return String.join(summaryParts, ' ');
@@ -158,7 +158,7 @@ global with sharing class ChatSummaryService {
         if (lower.contains('fragrance') || lower.contains('perfume') || lower.contains('cologne')) topics.add('fragrance');
         if (lower.contains('travel')) topics.add('travel');
         if (lower.contains('gift') || lower.contains('anniversary') || lower.contains('birthday')) topics.add('gifting');
-        if (lower.contains('routine')) topics.add('skincare routine');
+        if (lower.contains('collection') || lower.contains('routine')) topics.add('product collection');
         if (lower.contains('sensitive') || lower.contains('allergy') || lower.contains('irritat')) topics.add('sensitive skin');
         if (lower.contains('acne') || lower.contains('breakout') || lower.contains('oily')) topics.add('acne care');
         if (lower.contains('anti-aging') || lower.contains('wrinkle') || lower.contains('fine line')) topics.add('anti-aging');

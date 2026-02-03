@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
     <label>Agent Custom Object Access</label>
-    <description>Grants CRUD access to custom objects and Contact custom fields used by the Beauty Concierge agent.</description>
+    <description>Grants CRUD access to custom objects and Contact custom fields used by the Luxury Maison Advisor agent.</description>
     <hasActivationRequired>false</hasActivationRequired>
 
     <!-- Object-level permissions (grouped together) -->
@@ -138,7 +138,7 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <field>Contact.Beauty_Priority__c</field>
+        <field>Contact.Collector_Interests__c</field>
         <editable>true</editable>
         <readable>true</readable>
     </fieldPermissions>
@@ -158,12 +158,12 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <field>Contact.Skin_Concerns__c</field>
+        <field>Contact.Preferred_Maison__c</field>
         <editable>true</editable>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <field>Contact.Skin_Type__c</field>
+        <field>Contact.Style_Preference__c</field>
         <editable>true</editable>
         <readable>true</readable>
     </fieldPermissions>

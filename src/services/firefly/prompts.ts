@@ -41,31 +41,31 @@ export function buildScenePrompt(setting: SceneSetting): string {
  */
 export const STAGING_PROMPTS: Partial<Record<SceneSetting, string>> = {
   neutral:
-    'A single elegant skincare bottle, soft studio lighting from above and side, subtle shadow beneath the product',
+    'A single elegant luxury product bottle, soft studio lighting from above and side, subtle shadow beneath the product',
 
   bathroom:
-    'A single elegant skincare bottle with a slight dewy moisture effect on the surface, soft diffused lighting',
+    'A single elegant luxury product bottle with a slight dewy moisture effect on the surface, soft diffused lighting',
 
   travel:
-    'A single compact travel-size skincare bottle, clean studio lighting, slight reflection on surface',
+    'A single compact travel-size luxury product bottle, clean studio lighting, slight reflection on surface',
 
   outdoor:
-    'A single elegant skincare bottle with a fresh natural feel, bright even studio lighting, crisp and clean',
+    'A single elegant luxury product bottle with a fresh natural feel, bright even studio lighting, crisp and clean',
 
   lifestyle:
-    'A single luxurious skincare bottle, warm soft studio lighting, gentle highlight on the cap, slight reflection',
+    'A single luxurious luxury product bottle, warm soft studio lighting, gentle highlight on the cap, slight reflection',
 
   bedroom:
-    'A single elegant skincare bottle with warm amber tones, soft intimate lighting, gentle glow on the surface',
+    'A single elegant luxury product bottle with warm amber tones, soft intimate lighting, gentle glow on the surface',
 
   vanity:
-    'A single beauty product with glamorous lighting, Hollywood mirror-style illumination, flattering warm glow',
+    'A single luxury product with glamorous lighting, Hollywood mirror-style illumination, flattering warm glow',
 
   gym:
     'A single compact product bottle, bright clean lighting, modern minimal aesthetic, crisp shadows',
 
   office:
-    'A single minimalist beauty product, clean natural daylight, subtle shadow, professional product shot',
+    'A single minimalist luxury product, clean natural daylight, subtle shadow, professional product shot',
 };
 
 export function buildStagingPrompt(setting: SceneSetting): string {

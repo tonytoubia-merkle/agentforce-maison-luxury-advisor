@@ -94,7 +94,7 @@ export class CommerceClient {
       imageUrl: raw.image?.link || raw.imageUrl || '',
       images: raw.image_groups?.[0]?.images?.map((img: any) => img.link) || [],
       attributes: {
-        skinType: raw.c_skinType || [],
+        suitedFor: raw.c_suitedFor || [],
         concerns: raw.c_concerns || [],
         ingredients: raw.c_ingredients || [],
         size: raw.c_size || '',

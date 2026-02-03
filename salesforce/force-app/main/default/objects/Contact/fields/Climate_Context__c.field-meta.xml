@@ -7,5 +7,5 @@
     <trackFeedHistory>false</trackFeedHistory>
     <type>Text</type>
     <unique>false</unique>
-    <description>Climate or environment context affecting skincare needs</description>
+    <description>Climate or travel context relevant to product recommendations</description>
 </CustomField>

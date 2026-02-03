@@ -9,18 +9,21 @@ export interface PreseededAsset {
 
 /**
  * Pre-seeded background images shipped in the repo for instant load.
- * Each setting has 3 variants for variety. Images live in public/assets/backgrounds/.
+ * Each setting has 2-3 variants for variety. Images live in public/assets/backgrounds/.
+ *
+ * NOTE: Several new luxury settings reuse placeholder image files from the
+ * previous backgrounds until proper replacements are added.
+ * The mapping is:
+ *   bathroom-*.jpg  -> boutique-*.jpg  (placeholder)
+ *   vanity-*.jpg    -> showroom-*.jpg  (placeholder)
+ *   gym-*.jpg       -> cellar-*.jpg    (placeholder)
+ *   bedroom-*.jpg   -> lounge-*.jpg    (placeholder)
  */
 export const PRESEEDED_BACKGROUNDS: PreseededAsset[] = [
   // Neutral
   { setting: 'neutral', variant: '1', path: '/assets/backgrounds/neutral-1.jpg', tags: ['scene-neutral'] },
   { setting: 'neutral', variant: '2', path: '/assets/backgrounds/neutral-2.jpg', tags: ['scene-neutral'] },
   { setting: 'neutral', variant: '3', path: '/assets/backgrounds/neutral-3.jpg', tags: ['scene-neutral'] },
-
-  // Bathroom
-  { setting: 'bathroom', variant: '1', path: '/assets/backgrounds/bathroom-1.jpg', tags: ['scene-bathroom'] },
-  { setting: 'bathroom', variant: '2', path: '/assets/backgrounds/bathroom-2.jpg', tags: ['scene-bathroom'] },
-  { setting: 'bathroom', variant: '3', path: '/assets/backgrounds/bathroom-3.jpg', tags: ['scene-bathroom'] },
 
   // Travel
   { setting: 'travel', variant: '1', path: '/assets/backgrounds/travel-1.jpg', tags: ['scene-travel'] },
@@ -33,19 +36,23 @@ export const PRESEEDED_BACKGROUNDS: PreseededAsset[] = [
   // Lifestyle
   { setting: 'lifestyle', variant: '2', path: '/assets/backgrounds/lifestyle-2.jpg', tags: ['scene-lifestyle'] },
 
-  // Bedroom
-  { setting: 'bedroom', variant: '2', path: '/assets/backgrounds/bedroom-2.jpg', tags: ['scene-bedroom'] },
-  { setting: 'bedroom', variant: '3', path: '/assets/backgrounds/bedroom-3.jpg', tags: ['scene-bedroom'] },
+  // Boutique (placeholder: reuses bathroom-*.jpg files)
+  { setting: 'boutique', variant: '1', path: '/assets/backgrounds/bathroom-1.jpg', tags: ['scene-boutique'] },
+  { setting: 'boutique', variant: '2', path: '/assets/backgrounds/bathroom-2.jpg', tags: ['scene-boutique'] },
+  { setting: 'boutique', variant: '3', path: '/assets/backgrounds/bathroom-3.jpg', tags: ['scene-boutique'] },
 
-  // Vanity
-  { setting: 'vanity', variant: '1', path: '/assets/backgrounds/vanity-1.jpg', tags: ['scene-vanity'] },
-  { setting: 'vanity', variant: '2', path: '/assets/backgrounds/vanity-2.jpg', tags: ['scene-vanity'] },
-  { setting: 'vanity', variant: '3', path: '/assets/backgrounds/vanity-3.jpg', tags: ['scene-vanity'] },
+  // Showroom (placeholder: reuses vanity-*.jpg files)
+  { setting: 'showroom', variant: '1', path: '/assets/backgrounds/vanity-1.jpg', tags: ['scene-showroom'] },
+  { setting: 'showroom', variant: '2', path: '/assets/backgrounds/vanity-2.jpg', tags: ['scene-showroom'] },
+  { setting: 'showroom', variant: '3', path: '/assets/backgrounds/vanity-3.jpg', tags: ['scene-showroom'] },
 
-  // Gym
-  { setting: 'gym', variant: '1', path: '/assets/backgrounds/gym-1.jpg', tags: ['scene-gym'] },
-  { setting: 'gym', variant: '3', path: '/assets/backgrounds/gym-3.jpg', tags: ['scene-gym'] },
+  // Cellar (placeholder: reuses gym-*.jpg files)
+  { setting: 'cellar', variant: '1', path: '/assets/backgrounds/gym-1.jpg', tags: ['scene-cellar'] },
+  { setting: 'cellar', variant: '3', path: '/assets/backgrounds/gym-3.jpg', tags: ['scene-cellar'] },
 
+  // Lounge (placeholder: reuses bedroom-*.jpg files)
+  { setting: 'lounge', variant: '2', path: '/assets/backgrounds/bedroom-2.jpg', tags: ['scene-lounge'] },
+  { setting: 'lounge', variant: '3', path: '/assets/backgrounds/bedroom-3.jpg', tags: ['scene-lounge'] },
 ];
 
 /** Track last used variant per setting to avoid repeats. */

@@ -72,7 +72,7 @@ export const CustomerProvider: React.FC<{ children: React.ReactNode }> = ({ chil
           id: resolution.merkuryId || `appended-${personaId}`,
           name: 'Guest',
           email: '',
-          beautyProfile: {} as CustomerProfile['beautyProfile'],
+          luxuryProfile: {} as CustomerProfile['luxuryProfile'],
           orders: [],
           purchaseHistory: [],
           chatSummaries: [],

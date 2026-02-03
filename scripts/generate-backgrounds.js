@@ -29,16 +29,25 @@ function loadApiKey() {
 const API_KEY = loadApiKey();
 const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-generate-001:predict?key=${API_KEY}`;
 
+// Luxury Maison settings (La Maison + Maison des Esprits)
 const SETTINGS = {
-  neutral: 'Elegant minimalist empty surface with soft bokeh lights in the background, sophisticated neutral tones, studio lighting, clean uncluttered space',
-  bathroom: 'Luxurious modern bathroom counter with white marble surface, soft natural light, potted eucalyptus plant, high-end spa aesthetic, empty counter',
-  travel: 'Stylish hotel room with a leather carry-on suitcase on a bed, warm golden hour light, wanderlust travel aesthetic',
-  outdoor: 'Fresh outdoor wooden table with lush green foliage, dappled sunlight, healthy active lifestyle setting, empty table surface',
-  lifestyle: 'Sophisticated vanity dresser with round mirror, soft pink and cream tones, natural daylight from a large window, clean empty surface',
-  bedroom: 'Cozy bedroom nightstand with warm amber lamp light, soft linen textures, dark moody evening atmosphere, a small empty tray',
-  vanity: 'Glamorous makeup vanity station with Hollywood mirror lights, velvet blush-pink seat, clean marble countertop, warm flattering light',
-  gym: 'Modern gym locker room shelf, clean concrete and brushed metal surfaces, bright even overhead lighting, a folded white towel nearby',
-  office: 'Minimalist modern office desk near a large window, natural daylight, clean white surface with a small plant, calm productive atmosphere',
+  // General
+  neutral: 'Elegant minimalist luxury interior with soft bokeh lights, sophisticated neutral tones, marble accents, clean uncluttered space',
+  travel: 'First-class airport lounge at golden hour, leather luggage, world map, elegant travel accessories, luxurious atmosphere',
+  outdoor: 'Prestigious outdoor terrace with lush greenery, wrought iron furniture, dappled sunlight, sophisticated garden setting',
+  lifestyle: 'Sophisticated Parisian apartment interior with large windows, natural light, refined furniture, elegant empty surfaces',
+
+  // La Maison (luxury goods)
+  boutique: 'Grand Parisian luxury boutique interior, gilded mirrors, soft chandelier glow, marble floors, curated leather goods displays, warm ambient lighting',
+  showroom: 'Elegant luxury fashion showroom, dark wood vitrines, velvet display cushions, spotlit pedestals, refined museum-like atmosphere',
+  atelier: 'Artisan leather workshop atelier, warm golden light, crafting tools, premium materials, heritage craftsmanship ambiance',
+
+  // Maison des Esprits (fine spirits)
+  cellar: 'Underground champagne cellar with chalk walls, candlelight reflecting off golden bottles, oak barrels, atmospheric stone arches',
+  lounge: 'Intimate cognac tasting lounge, leather armchairs, warm amber lighting, crystal decanters, dark wood paneling, cigar club atmosphere',
+  'tasting-room': 'Modern wine tasting room, floor-to-ceiling bottle displays, sommelier station, elegant glassware, soft diffused natural light',
+  vineyard: 'Provençal vineyard terrace at sunset, lavender fields in distance, rustic stone table, crystal glasses, romantic golden hour light',
+  terrace: 'Mediterranean luxury terrace overlooking the sea, white linen curtains, elegant bar setup, champagne on ice, summer evening atmosphere',
 };
 
 const VARIANTS = [
@@ -47,7 +56,7 @@ const VARIANTS = [
   { suffix: '3', mod: 'Warm evening ambient lighting, candles or warm lamps, cozy intimate mood.' },
 ];
 
-const NO_PRODUCTS = ' Empty background scene only, no products, no bottles, no cosmetics, no text or labels. Professional interior photography, elegant and luxurious atmosphere, soft diffused shadows, ultra high quality, photorealistic.';
+const NO_PRODUCTS = ' Empty background scene only, no products, no bottles, no people, no text or labels. Professional interior photography, elegant and luxurious atmosphere, soft diffused shadows, ultra high quality, photorealistic.';
 
 function postJSON(url, body) {
   return new Promise((resolve, reject) => {

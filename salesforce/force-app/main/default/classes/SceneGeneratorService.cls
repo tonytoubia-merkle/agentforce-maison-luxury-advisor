@@ -47,7 +47,7 @@ public with sharing class SceneGeneratorService {
             // Query products and build product array
             List<Product2> products = [
                 SELECT Id, Name, Brand__c, Category__c, Price__c, Description__c,
-                       Image_URL__c, Skin_Types__c, Rating__c, Is_Travel__c
+                       Image_URL__c, Maison__c, Rating__c, Is_Travel__c
                 FROM Product2
                 WHERE Id IN :request.productIds AND IsActive = true
             ];

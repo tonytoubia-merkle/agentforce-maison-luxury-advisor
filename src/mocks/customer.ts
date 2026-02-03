@@ -4,11 +4,11 @@ export const MOCK_CUSTOMER: CustomerProfile = {
   id: 'cust-12345',
   name: 'Sarah',
   email: 'sarah@example.com',
-  beautyProfile: {
-    skinType: 'sensitive',
+  luxuryProfile: {
+    stylePreference: 'minimalist',
     concerns: ['hydration', 'redness'],
     allergies: ['fragrance'],
-    preferredBrands: ['SERENE', 'Gentle Care'],
+    preferredBrands: ['MAISON', 'SERENE'],
     ageRange: '30-40',
   },
   purchaseHistory: [

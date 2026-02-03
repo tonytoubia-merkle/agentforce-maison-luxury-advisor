@@ -50,9 +50,9 @@ const ENRICHMENT_PROBES: Record<string, string[]> = {
   'Birthday': ['Any special occasions coming up?'],
   'Anniversary': ['Shopping for someone special?', 'Any celebrations on the horizon?'],
   'Morning routine': ['How much time do you usually have in the morning?'],
-  'Exercise': ['Do you work out regularly? It can affect your skin!'],
-  'Work environment': ['Do you work indoors or outdoors? Helps me pick the right SPF.'],
-  'Beauty priority': ['What matters most to you in skincare?'],
+  'Exercise': ['Do you work out regularly? It helps me recommend the right products!'],
+  'Work environment': ['Do you work indoors or outdoors? It helps with my recommendations.'],
+  'Luxury priority': ['What matters most to you when choosing luxury products?'],
   'Price sensitivity': ['Do you have a budget in mind?'],
 };
 
@@ -103,7 +103,7 @@ function generateWelcomeResponse(): AgentResponse | null {
               setting: 'lifestyle',
               mood: 'warm-travel-return',
               generateBackground: true,
-              backgroundPrompt: 'Warm golden hour luxury lifestyle setting, welcoming atmosphere, soft ambient light, travel memories, elegant beauty space',
+              backgroundPrompt: 'Warm golden hour luxury lifestyle setting, welcoming atmosphere, soft ambient light, travel memories, elegant luxury space',
             },
           },
         },
@@ -154,7 +154,7 @@ function generateWelcomeResponse(): AgentResponse | null {
               setting: 'vanity',
               mood: 'elegant-makeup',
               generateBackground: true,
-              backgroundPrompt: 'Luxurious makeup vanity setting, soft glamorous lighting, high-end beauty atmosphere, warm and inviting',
+              backgroundPrompt: 'Luxurious makeup vanity setting, soft glamorous lighting, high-end luxury atmosphere, warm and inviting',
             },
           },
         },
@@ -178,7 +178,7 @@ function generateWelcomeResponse(): AgentResponse | null {
               setting: 'bathroom',
               mood: 'fresh-start',
               generateBackground: true,
-              backgroundPrompt: 'Clean modern bathroom setting, bright natural light, minimalist beauty space, fresh and inviting',
+              backgroundPrompt: 'Clean modern bathroom setting, bright natural light, minimalist luxury space, fresh and inviting',
             },
           },
         },
@@ -206,8 +206,8 @@ function generateWelcomeResponse(): AgentResponse | null {
               backgroundPrompt: hasBrowseFragrance
                 ? 'Elegant intimate bedroom setting, soft evening light, luxury fragrance display atmosphere'
                 : hasBrowseMakeup
-                  ? 'Luxurious makeup vanity setting, soft glamorous lighting, high-end beauty atmosphere'
-                  : 'Sophisticated lifestyle beauty setting, warm natural light, luxury skincare atmosphere',
+                  ? 'Luxurious makeup vanity setting, soft glamorous lighting, high-end luxury atmosphere'
+                  : 'Sophisticated lifestyle luxury setting, warm natural light, elegant atmosphere',
             },
           },
         },
@@ -238,7 +238,7 @@ function generateWelcomeResponse(): AgentResponse | null {
             setting: 'lifestyle',
             mood: 'personalized-welcome',
             generateBackground: true,
-            backgroundPrompt: 'Elegant luxury beauty lifestyle setting, warm welcoming atmosphere, soft golden light',
+            backgroundPrompt: 'Elegant luxury lifestyle setting, warm welcoming atmosphere, soft golden light',
           },
         },
       },
@@ -285,7 +285,7 @@ function generateWelcomeResponse(): AgentResponse | null {
       };
     }
 
-    // Aisha-like: clean beauty + wellness — set a calming tone, don't reference interests
+    // Aisha-like: clean luxury + wellness — set a calming tone, don't reference interests
     return {
       sessionId: 'mock-session',
       message: "Welcome! I'm here to help you discover something you'll love. What are you looking for today?",
@@ -293,7 +293,7 @@ function generateWelcomeResponse(): AgentResponse | null {
         action: 'WELCOME_SCENE' as UIAction,
         payload: {
           welcomeMessage: 'Welcome!',
-          welcomeSubtext: "Your personal beauty concierge — let's find your perfect match.",
+          welcomeSubtext: "Your personal luxury advisor — let's find your perfect match.",
           sceneContext: {
             setting: 'neutral',
             generateBackground: false,
@@ -302,7 +302,7 @@ function generateWelcomeResponse(): AgentResponse | null {
       },
       // Subtly steer toward likely interests without being explicit
       suggestedActions: [
-        isClean ? 'Show me clean beauty brands' : 'Show me skincare',
+        isClean ? 'Show me clean luxury brands' : 'Show me our collection',
         isWellness ? 'Help me build a routine' : 'What do you recommend?',
         'Show me bestsellers',
       ],
@@ -313,12 +313,12 @@ function generateWelcomeResponse(): AgentResponse | null {
   // Anonymous
   return {
     sessionId: 'mock-session',
-    message: "Welcome to your personal beauty concierge! What can I help you discover today?",
+    message: "Welcome to your personal luxury advisor! What can I help you discover today?",
     uiDirective: {
       action: 'WELCOME_SCENE' as UIAction,
       payload: {
         welcomeMessage: 'Welcome!',
-        welcomeSubtext: 'Your personal beauty concierge is ready to help you discover something perfect.',
+        welcomeSubtext: 'Your personal luxury advisor is ready to help you discover something perfect.',
         sceneContext: {
           setting: 'neutral',
           mood: 'elegant-welcome',
@@ -762,7 +762,7 @@ const RESPONSE_PATTERNS: {
       const welcome = generateWelcomeResponse();
       if (welcome) return welcome;
       return {
-        message: "Hello! Welcome to your personal beauty concierge. What are you looking for today?",
+        message: "Hello! Welcome to your personal luxury advisor. What are you looking for today?",
         suggestedActions: ['Show me moisturizers', 'Show me makeup', 'Show me fragrances', 'Build me a routine'],
       };
     },
