@@ -343,7 +343,7 @@ export const ConversationProvider: React.FC<{ children: React.ReactNode }> = ({ 
   const [isLoadingWelcome, setIsLoadingWelcome] = useState(false);
   const [suggestedActions, setSuggestedActions] = useState<string[]>([]);
   const { processUIDirective, resetScene, getSceneSnapshot, restoreSceneSnapshot } = useScene();
-  const { customer, selectedPersonaId, _isRefreshRef, _onSessionReset, identifyByEmail } = useCustomer();
+  const { customer, selectedPersonaId, isResolving, _isRefreshRef, _onSessionReset, identifyByEmail } = useCustomer();
   const { maisonId: activeMaisonId } = useMaisonSafe();
   const { showToasts } = useActivityToast();
   const messagesRef = useRef<AgentMessage[]>([]);
@@ -412,6 +412,13 @@ export const ConversationProvider: React.FC<{ children: React.ReactNode }> = ({ 
       return;
     }
 
+    // Wait for identity resolution to complete before acting on persona changes
+    // This prevents race conditions where selectedPersonaId changes but customer is still null
+    if (isResolving) {
+      console.log('[session] Identity resolution in progress — waiting...');
+      return;
+    }
+
     const prevPersonaId = prevPersonaIdRef.current;
     const prevMaisonId = prevMaisonIdRef.current;
     prevPersonaIdRef.current = selectedPersonaId;
@@ -442,7 +449,23 @@ export const ConversationProvider: React.FC<{ children: React.ReactNode }> = ({ 
       console.log('[session] Restoring cached session for', cacheKey, `(${cached.messages.length} messages)`);
       setMessages(cached.messages);
       setSuggestedActions(cached.suggestedActions);
-      restoreSceneSnapshot(cached.sceneSnapshot);
+
+      // Check if the cached scene has an incomplete background (was still loading when saved)
+      const sceneBg = cached.sceneSnapshot.background;
+      const isIncompleteBackground =
+        (sceneBg.type === 'generative' && (!sceneBg.value || sceneBg.isLoading)) ||
+        (sceneBg.type === 'image' && !sceneBg.value);
+
+      if (isIncompleteBackground) {
+        // Restore scene but use fallback background instead of incomplete one
+        console.log('[session] Cached scene had incomplete background, using fallback');
+        restoreSceneSnapshot({
+          ...cached.sceneSnapshot,
+          background: { type: 'image', value: '/assets/backgrounds/default.png' },
+        });
+      } else {
+        restoreSceneSnapshot(cached.sceneSnapshot);
+      }
       setIsLoadingWelcome(false);
 
       // Restore agent client state
@@ -548,7 +571,7 @@ export const ConversationProvider: React.FC<{ children: React.ReactNode }> = ({ 
     }, 300);
 
     return () => clearTimeout(timer);
-  }, [customer, selectedPersonaId, activeMaisonId]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [customer, selectedPersonaId, activeMaisonId, isResolving]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const sendMessage = useCallback(async (content: string) => {
     const userMessage: AgentMessage = {

@@ -61,8 +61,8 @@ const NOVEL_PATTERNS = [
   /\b(cherry blossom|autumn leaves|fall foliage|winter wonderland|northern lights|aurora|starry|moonlit|neon|cyberpunk)\b/i,
   // Transportation/movement
   /\b(airplane|train|subway|yacht|sailboat|cruise|helicopter|cable car|gondola)\b/i,
-  // Cultural/event specifics
-  /\b(festival|carnival|concert|gallery|museum|library|bookstore|cafe|restaurant|bar|club|lounge)\b/i,
+  // Cultural/event specifics (exclude "lounge" - too common in standard scene settings)
+  /\b(festival|carnival|concert|gallery|museum|library|bookstore|cafe|restaurant|bar|club)\b/i,
 ];
 
 /**
@@ -96,6 +96,8 @@ export interface BackgroundOptions {
   mood?: string;
   customerContext?: string;
   sceneType?: string;
+  /** If set, use this existing background instead of generating a new one. */
+  existingBackground?: string;
 }
 
 export function useGenerativeBackground() {
@@ -103,6 +105,12 @@ export function useGenerativeBackground() {
 
   const generateBackground = useCallback(
     async (setting: SceneSetting, products: Product[], options?: BackgroundOptions): Promise<string> => {
+      // 0. Preserve existing background if provided (avoids regeneration on product updates)
+      if (options?.existingBackground) {
+        console.log('[bg] Preserving existing background for', setting);
+        return options.existingBackground;
+      }
+
       const enabled = import.meta.env.VITE_ENABLE_GENERATIVE_BACKGROUNDS === 'true';
 
       // Build cache key — backgroundPrompt is the primary key when present

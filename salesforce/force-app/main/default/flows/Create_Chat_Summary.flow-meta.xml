@@ -13,7 +13,7 @@
         <locationX>50</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>Create_Summary_Record</targetReference>
+            <targetReference>Check_ContactId</targetReference>
         </connector>
     </start>
     <status>Active</status>
@@ -84,12 +84,55 @@
         <isOutput>true</isOutput>
     </variables>
 
+    <!-- Decision: Check if contactId is provided -->
+    <decisions>
+        <name>Check_ContactId</name>
+        <label>Check ContactId</label>
+        <locationX>176</locationX>
+        <locationY>80</locationY>
+        <defaultConnector>
+            <targetReference>Set_Skipped</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>No ContactId</defaultConnectorLabel>
+        <rules>
+            <name>Has_ContactId</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>contactId</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue><booleanValue>false</booleanValue></rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Create_Summary_Record</targetReference>
+            </connector>
+            <label>Has ContactId</label>
+        </rules>
+    </decisions>
+
+    <!-- Skipped Assignment (anonymous user) -->
+    <assignments>
+        <name>Set_Skipped</name>
+        <label>Set Skipped</label>
+        <locationX>400</locationX>
+        <locationY>158</locationY>
+        <assignmentItems>
+            <assignToReference>outputSuccess</assignToReference>
+            <operator>Assign</operator>
+            <value><booleanValue>false</booleanValue></value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>outputError</assignToReference>
+            <operator>Assign</operator>
+            <value><stringValue>Skipped: No contactId provided (anonymous user)</stringValue></value>
+        </assignmentItems>
+    </assignments>
+
     <!-- Create Record -->
     <recordCreates>
         <name>Create_Summary_Record</name>
         <label>Create Summary Record</label>
         <locationX>176</locationX>
-        <locationY>158</locationY>
+        <locationY>250</locationY>
         <connector>
             <targetReference>Set_Success</targetReference>
         </connector>
@@ -129,7 +172,7 @@
         <name>Set_Success</name>
         <label>Set Success</label>
         <locationX>176</locationX>
-        <locationY>350</locationY>
+        <locationY>442</locationY>
         <assignmentItems>
             <assignToReference>outputSuccess</assignToReference>
             <operator>Assign</operator>
@@ -147,7 +190,7 @@
         <name>Set_Error</name>
         <label>Set Error</label>
         <locationX>400</locationX>
-        <locationY>350</locationY>
+        <locationY>442</locationY>
         <assignmentItems>
             <assignToReference>outputSuccess</assignToReference>
             <operator>Assign</operator>

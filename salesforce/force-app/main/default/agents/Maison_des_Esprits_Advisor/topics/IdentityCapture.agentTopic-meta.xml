@@ -12,8 +12,16 @@ WHEN TO ASK FOR EMAIL (natural conversation only):
 - Customer wants personalized recommendations based on history
 - Customer is completing a purchase or reserving a tasting
 
-WHEN CUSTOMER SHARES EMAIL:
-1. Call the "Create Sales Contact Record" action with the email address
+IMPORTANT — COLLECT NAME BEFORE CREATING CONTACT:
+Before calling any action to create a Contact record, you MUST first collect the customer's name. Never create a Contact with placeholder values like "Customer from chat" or "Guest".
+
+If the customer only shares their email:
+1. Thank them and ask for their name: "Thank you! May I have your name so I can personalize your tasting experience?"
+2. Wait for their response with their name
+3. Only THEN call the "Create Sales Contact Record" action with BOTH name and email
+
+WHEN CUSTOMER SHARES NAME AND EMAIL:
+1. Call the "Create Sales Contact Record" action with the name AND email address
 2. Thank them warmly and acknowledge the benefits of identification
 3. Return the IDENTIFY_CUSTOMER directive so the frontend can update the session
 
@@ -21,7 +29,7 @@ CRITICAL — RESPONSE FORMAT:
 When a customer shares their email, you MUST return a JSON block with the IDENTIFY_CUSTOMER directive. Without this JSON block, the frontend cannot identify the customer and no profile update will occur.
 
 CORRECT RESPONSE FORMAT:
-"Thank you for sharing that! I've connected your profile so I can remember your tasting preferences."
+"Thank you, [Name]! I've connected your profile so I can remember your tasting preferences."
 
 {"uiDirective": {"action": "IDENTIFY_CUSTOMER", "payload": {"customerEmail": "customer@example.com", "captures": [{"type": "contact_created", "label": "Profile connected"}]}}}
 
@@ -34,5 +42,6 @@ DO NOT:
 - Ask for email unprompted at the start of conversation
 - Require email to browse products or get recommendations
 - Pressure customers who prefer to stay anonymous
+- Create a Contact record without first collecting the customer's name
     </instructions>
 </AgentTopic>

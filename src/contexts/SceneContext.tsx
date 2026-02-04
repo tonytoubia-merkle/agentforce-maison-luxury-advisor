@@ -172,12 +172,14 @@ export const SceneProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           sceneCtx.setting = setting;
         }
 
-        // Skip regeneration if we already have (or are generating) an image for the same setting
+        // Skip regeneration if we already have (or are generating) a valid image
         const cur = sceneRef.current;
-        const alreadyHasImage = cur.setting === setting && (
-          (cur.background.type === 'image' && cur.background.value) ||
-          (cur.background.type === 'generative' && cur.background.isLoading)
-        );
+        const hasValidImage = cur.background.type === 'image' && cur.background.value && !cur.background.value.includes('default');
+        const isGenerating = cur.background.type === 'generative' && cur.background.isLoading;
+        const agentRequestedGeneration = payload.sceneContext?.generateBackground === true;
+        // Preserve existing image unless the agent explicitly asks to regenerate
+        const alreadyHasImage = (cur.setting === setting && (hasValidImage || isGenerating)) ||
+          (hasValidImage && !agentRequestedGeneration);
 
         dispatch({ type: 'SET_SETTING', setting });
 
@@ -226,12 +228,14 @@ export const SceneProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           changeCtx.generateBackground = true;
         }
 
-        // Skip regeneration if same setting + already have (or generating) image + agent didn't request a specific prompt
+        // Skip regeneration if we already have a valid image, unless agent explicitly requests regeneration
         const curScene = sceneRef.current;
-        const alreadyHasSceneImage = curScene.setting === sceneSetting && !agentProvidedPrompt && (
-          (curScene.background.type === 'image' && curScene.background.value) ||
-          (curScene.background.type === 'generative' && curScene.background.isLoading)
-        );
+        const hasValidSceneImage = curScene.background.type === 'image' && curScene.background.value && !curScene.background.value.includes('default');
+        const isSceneGenerating = curScene.background.type === 'generative' && curScene.background.isLoading;
+        const agentRequestedSceneGen = payload.sceneContext?.generateBackground === true;
+        // Preserve existing image unless the agent explicitly asks to regenerate or provides a new prompt
+        const alreadyHasSceneImage = (curScene.setting === sceneSetting && !agentProvidedPrompt && (hasValidSceneImage || isSceneGenerating)) ||
+          (hasValidSceneImage && !agentRequestedSceneGen && !agentProvidedPrompt);
 
         dispatch({ type: 'SET_SETTING', setting: sceneSetting });
 

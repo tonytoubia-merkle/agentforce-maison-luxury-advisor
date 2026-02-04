@@ -9,6 +9,7 @@ import { WelcomeScreen } from '@/components/WelcomeScreen/WelcomeScreen';
 import { WelcomeLoader } from '@/components/WelcomeScreen/WelcomeLoader';
 import { IdentityPanel } from '@/components/IdentityPanel/IdentityPanel';
 import { MaisonSelector } from '@/components/MaisonSelector/MaisonSelector';
+import { RememberMeButton } from '@/components/RememberMeButton';
 
 export const MaisonPage: React.FC = () => {
   const { scene } = useScene();
@@ -56,6 +57,11 @@ export const MaisonPage: React.FC = () => {
 
       <IdentityPanel />
       <MaisonSelector />
+
+      {/* Remember Me button for anonymous users - positioned near identity panel */}
+      <div className="fixed top-4 right-48 z-50">
+        <RememberMeButton />
+      </div>
     </div>
   );
 };
